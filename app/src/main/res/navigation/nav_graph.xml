@@ -9,7 +9,7 @@
         android:id="@+id/FirstFragment"
         android:name="cs205.a3.FirstFragment"
         android:label="@string/first_fragment_label"
-        tools:layout="@layout/fragment_first">
+        tools:layout="@layout/activity_main">
         <action
             android:id="@+id/action_FirstFragment_to_fullscreenFragment"
             app:destination="@id/fullscreenFragment" />
@@ -18,5 +18,5 @@
         android:id="@+id/fullscreenFragment"
         android:name="cs205.a3.FullscreenFragment"
         android:label="fragment_fullscreen"
-        tools:layout="@layout/fragment_fullscreen" />
+        tools:layout="@layout/game_fullscreen" />
 </navigation>
