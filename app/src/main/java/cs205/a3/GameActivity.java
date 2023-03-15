@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.View;
 
 import cs205.a3.databinding.GameFullscreenBinding;
 
@@ -15,7 +16,8 @@ public class GameActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = GameFullscreenBinding.inflate(LayoutInflater.from(getApplicationContext()));
+        System.out.println("YES");
+        binding = GameFullscreenBinding.inflate(getLayoutInflater());
         binding.getRoot().setOnTouchListener((view, motionEvent) -> {
             System.out.println("TOUCHED");
             return true;
@@ -58,6 +60,8 @@ public class GameActivity extends Activity {
         });
 
         setContentView(R.layout.game_fullscreen);
+        View view = binding.getRoot();
+        setContentView(view);
     }
 
 
