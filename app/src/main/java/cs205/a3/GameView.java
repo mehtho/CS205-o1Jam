@@ -23,7 +23,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         super(context);
         getHolder().addCallback(this);
         setKeepScreenOn(true);
-//        setFocusable(View.FOCUSABLE);
     }
 
     private void sendNotification() {
@@ -63,7 +62,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceChanged(@NonNull SurfaceHolder surfaceHolder, int i, int i1, int i2) {
-//        game.resize(width, height);
+        game.resize(i1, i2);
     }
 
     @Override

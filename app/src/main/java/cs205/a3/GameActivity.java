@@ -16,12 +16,7 @@ public class GameActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        System.out.println("YES");
         binding = GameFullscreenBinding.inflate(getLayoutInflater());
-        binding.getRoot().setOnTouchListener((view, motionEvent) -> {
-            System.out.println("TOUCHED");
-            return true;
-        });
 
         binding.button1.setOnTouchListener((v, event) -> {
             if(event.getAction() == MotionEvent.ACTION_UP){

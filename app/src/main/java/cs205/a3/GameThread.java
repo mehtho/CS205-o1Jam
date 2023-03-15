@@ -21,21 +21,21 @@ public class GameThread extends Thread {
     @Override
     public void run() {
         super.run();
-//        while (isRunning) {
-//            game.draw();
-//            game_sleep();
-//            game.update();
-//        }
+        while (isRunning) {
+            game.draw();
+            game_sleep();
+            game.update();
+        }
     }
 
-//    private void game_sleep() {
-//        long sleepTime = game.getSleepTime();
-//        if (sleepTime > 0) {
-//            try {
-//                sleep(sleepTime);
-//            } catch (final Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
+    private void game_sleep() {
+        long sleepTime = game.getSleepTime();
+        if (sleepTime > 0) {
+            try {
+                sleep(sleepTime);
+            } catch (final Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }
