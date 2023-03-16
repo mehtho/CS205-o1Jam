@@ -1,7 +1,7 @@
 package cs205.a3.scorecalc;
 
 public class Note {
-    public static final int MAX_AGE = 100;
+    public static final int MAX_AGE = 60;
     private int age;
 
     public int getAge() {
@@ -9,7 +9,7 @@ public class Note {
     }
 
     public boolean incAge() {
-        return this.age++ >= 100;
+        return this.age++ >= MAX_AGE;
     }
 
     public String toString() {
