@@ -7,14 +7,17 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import cs205.a3.scorecalc.Board;
 import cs205.a3.scorecalc.Note;
+import cs205.a3.scorecalc.ScoreHandler;
 
 public class Game {
+    public static Game game;
 
     private final static int targetFps = 60;
 
@@ -46,9 +49,14 @@ public class Game {
 
     private int canvasWidth;
 
+    private ScoreHandler scoreHandler;
+
     public Game(final Runnable runnable, final Predicate<Consumer<Canvas>> useCanvas) {
         this.runnable = runnable;
         this.useCanvas = useCanvas;
+
+        this.scoreHandler = new ScoreHandler();
+        new Thread(scoreHandler).start();
 
         {
             fpsText.setColor(Color.rgb(200, 200, 200));
@@ -62,6 +70,8 @@ public class Game {
             noteColor.setStrokeWidth(1);
             noteColor.setStyle(Paint.Style.FILL);
         }
+
+        Game.game = this;
     }
 
     public long getSleepTime() {
@@ -92,7 +102,7 @@ public class Game {
         for(int lane = 0; lane < 4; lane++) {
             for(Note note:board.getBoard().get(lane)) {
                 int l = lane * (canvasWidth/4);
-                int t = note.getAge()*30;
+                int t = note.getAge()*(canvasHeight/50);
                 canvas.drawRect(l, t, l + (canvasWidth/4), t + 80, noteColor);
             }
         }
@@ -142,5 +152,13 @@ public class Game {
     public void resize(int canvasWidth, int canvasHeight) {
         this.canvasWidth = canvasWidth;
         this.canvasHeight = canvasHeight;
+    }
+
+    public void tapLane(int laneNo) {
+        LinkedList<Note> lane = this.board.getBoard().get(laneNo);
+
+        if (!lane.isEmpty()) {
+            scoreHandler.enqueueScore(lane.pop().getScore());
+        }
     }
 }

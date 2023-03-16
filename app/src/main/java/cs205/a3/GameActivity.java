@@ -18,10 +18,12 @@ public class GameActivity extends Activity {
         super.onCreate(savedInstanceState);
         binding = GameFullscreenBinding.inflate(getLayoutInflater());
 
+        Game game = Game.game;
+
         binding.button1.setOnTouchListener((v, event) -> {
             if(event.getAction() == MotionEvent.ACTION_UP){
 
-                System.out.println("B1");
+                game.tapLane(0);
                 return true;
             }
             return false;
@@ -30,7 +32,7 @@ public class GameActivity extends Activity {
         binding.button2.setOnTouchListener((v, event) -> {
             if(event.getAction() == MotionEvent.ACTION_UP){
 
-                System.out.println("B2");
+                game.tapLane(1);
                 return true;
             }
             return false;
@@ -39,7 +41,7 @@ public class GameActivity extends Activity {
         binding.button3.setOnTouchListener((v, event) -> {
             if(event.getAction() == MotionEvent.ACTION_UP){
 
-                System.out.println("B3");
+                game.tapLane(2);
                 return true;
             }
             return false;
@@ -48,7 +50,7 @@ public class GameActivity extends Activity {
         binding.button4.setOnTouchListener((v, event) -> {
             if(event.getAction() == MotionEvent.ACTION_UP){
 
-                System.out.println("B4");
+                game.tapLane(3);
                 return true;
             }
             return false;

@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Board {
-    private final List<List<Note>> board;
+    private final List<LinkedList<Note>> board;
 
     public Board() {
         board = new ArrayList<>();
@@ -16,7 +16,7 @@ public class Board {
         }
     }
 
-    public List<List<Note>> getBoard() {
+    public List<LinkedList<Note>> getBoard() {
         return board;
     }
 

@@ -56,7 +56,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             gameThread = new GameThread(game);
         }
         final Rect rect = getHolder().getSurfaceFrame();
-//        game.resize(rect.width(), rect.height());
+        game.resize(rect.width(), rect.height());
         gameThread.startLoop();
     }
 
