@@ -16,27 +16,38 @@ public class Board {
         }
     }
 
-    public List<LinkedList<Note>> getBoard() {
+    public synchronized List<LinkedList<Note>> getBoard() {
         return board;
     }
 
-    public void addNote(int lane) {
+    public synchronized void addNote(int lane) {
         board.get(lane).add(new Note());
     }
 
-    public boolean tick() {
+    public synchronized boolean tick() {
         AtomicBoolean triggerMiss = new AtomicBoolean(false);
+
         board.forEach(lane -> {
             Iterator<Note> iter = lane.iterator();
+
             while(iter.hasNext()) {
                 if(iter.next().incAge()){
                     iter.remove();
-                    triggerMiss.set(true);
+                    triggerMiss.compareAndSet(false, true);
                 }
             }
         });
 
         return triggerMiss.get();
+    }
+
+    public synchronized int tapLane(int laneNo) {
+        LinkedList<Note> lane = board.get(laneNo);
+
+        if (!lane.isEmpty()) {
+            return lane.pop().getScore();
+        }
+        return -2;
     }
 
     public String toString() {

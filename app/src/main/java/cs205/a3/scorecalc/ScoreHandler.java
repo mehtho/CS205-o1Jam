@@ -17,11 +17,13 @@ public class ScoreHandler implements Runnable{
             synchronized (this) {
                 try{
                     final long inp = blockingQueue.take();
+
                     if (inp == -1) {
                         combo = 0;
                     }
                     else {
-                        score += inp * ((1 + combo++) / 25);
+                        final long toAdd = (long)(inp * ((1.0 + (combo++ / 25.0))));
+                        score += toAdd;
                     }
                 } catch (InterruptedException e) {
                     // Do nothing
@@ -31,11 +33,7 @@ public class ScoreHandler implements Runnable{
     }
 
     public void enqueueScore(long score) {
-        try {
-            blockingQueue.put(score);
-        } catch (InterruptedException e) {
-            // Do nothing
-        }
+        blockingQueue.offer(score);
     }
 
     public ScoreHandler() {

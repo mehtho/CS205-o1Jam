@@ -17,17 +17,16 @@ public class Note {
     }
 
     public int getScore() {
-        System.out.println(this.age);
         if(this.age < 10) {
             return -1;
         }
-        else if (this.age < 20) {
+        else if (this.age < 15) {
             return 50;
         }
-        else if (this.age < 30) {
+        else if (this.age < 25) {
             return 100;
         }
-        else if (this.age < 40) {
+        else if (this.age < 35) {
             return 300;
         }
         else{

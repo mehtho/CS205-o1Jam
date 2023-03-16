@@ -92,11 +92,13 @@ public class Game {
             return;
         }
         canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
-        board.tick();
+        if(board.tick()) {
+            scoreHandler.enqueueScore(-1);
+        }
 
         // TODO: Replace with proper spawning
-        if(Math.random()<0.05) {
-            board.addNote((int)(Math.random()*4));
+        if(Math.random()<0.01) {
+            board.addNote(0);
         }
 
         for(int lane = 0; lane < 4; lane++) {
@@ -110,6 +112,18 @@ public class Game {
         canvas.drawText(
                 String.format("%.2f", avgFps),
                 10.0f, 30.0f,
+                fpsText
+        );
+
+        canvas.drawText(
+                String.format("%d", scoreHandler.getScore()),
+                200.0f, 30.0f,
+                fpsText
+        );
+
+        canvas.drawText(
+                String.format("x%d", scoreHandler.getCombo()),
+                400.0f, 30.0f,
                 fpsText
         );
     }
@@ -154,11 +168,10 @@ public class Game {
         this.canvasHeight = canvasHeight;
     }
 
-    public void tapLane(int laneNo) {
-        LinkedList<Note> lane = this.board.getBoard().get(laneNo);
-
-        if (!lane.isEmpty()) {
-            scoreHandler.enqueueScore(lane.pop().getScore());
+    public void tapLane(int lane) {
+        int point = board.tapLane(lane);
+        if (point != -2 ){
+            scoreHandler.enqueueScore(point);
         }
     }
 }
