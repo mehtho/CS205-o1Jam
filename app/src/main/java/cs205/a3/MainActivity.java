@@ -9,6 +9,8 @@ import android.view.View;
 
 import androidx.navigation.ui.AppBarConfiguration;
 
+import cs205.a3.song.SongServer;
+
 public class MainActivity extends Activity {
 
     private AppBarConfiguration appBarConfiguration;
@@ -17,6 +19,8 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        SongServer server = SongServer.getInstance(getString(R.string.server));
+        server.getAllSongs();
     }
 
     @Override
@@ -42,6 +46,9 @@ public class MainActivity extends Activity {
     }
 
     public void doOnClick(View view) {
-        startActivity(new Intent(this, GameActivity.class));
+        InternalStorage.writeFileOnInternalStorage(getApplicationContext(), "Test", "Test string");
+        Intent intent = new Intent(this, GameActivity.class);
+        intent.putExtra("songName", "helloworld");
+        startActivity(intent);
     }
 }

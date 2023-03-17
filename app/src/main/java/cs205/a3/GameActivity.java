@@ -19,6 +19,7 @@ public class GameActivity extends Activity {
         super.onCreate(savedInstanceState);
         binding = GameFullscreenBinding.inflate(getLayoutInflater());
         Game game = Game.game;
+        game.setSongName(getIntent().getStringExtra("songName"));
 
         binding.button1.setOnTouchListener((v, event) -> {
             if(event.getAction() == MotionEvent.ACTION_DOWN){
@@ -56,8 +57,7 @@ public class GameActivity extends Activity {
         });
 
         setContentView(R.layout.game_fullscreen);
-        View view = binding.getRoot();
-        setContentView(view);
+        setContentView(binding.getRoot());
     }
 
 

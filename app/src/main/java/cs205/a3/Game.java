@@ -49,6 +49,8 @@ public class Game {
 
     private int canvasWidth;
 
+    private String songName;
+
     private ScoreHandler scoreHandler;
 
     public Game(final Runnable runnable, final Predicate<Consumer<Canvas>> useCanvas) {
@@ -74,6 +76,11 @@ public class Game {
         Game.game = this;
     }
 
+    public void setSongName(String songName) {
+        this.songName = songName;
+        System.out.println(songName + "SONG NAME");
+    }
+
     public long getSleepTime() {
         final double targetFrameTime = (1000.0 / targetFps);
         final long updateTime = System.currentTimeMillis() - elapsedTimer.getUpdateStartTime();
@@ -91,6 +98,11 @@ public class Game {
         if (canvas == null) {
             return;
         }
+        if(songName == null) {
+            System.out.println("No song name");
+            return;
+        }
+
         canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
         if(board.tick()) {
             scoreHandler.enqueueScore(-1);
