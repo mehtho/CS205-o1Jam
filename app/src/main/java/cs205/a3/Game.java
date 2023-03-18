@@ -19,11 +19,9 @@ import cs205.a3.scorecalc.ScoreHandler;
 public class Game {
     public static Game game;
 
-    private final static int targetFps = 60;
+    private final static int targetFps = 50;
 
     private final static long intervalFps = 1000L;
-
-    private final static long intervalUps = 1000L;
     private final Runnable runnable;
 
     private final Predicate<Consumer<Canvas>> useCanvas;
@@ -35,8 +33,6 @@ public class Game {
     private final ElapsedTimer elapsedTimer = new ElapsedTimer();
 
     private final DeltaStepper fpsUpdater = new DeltaStepper(intervalFps, this::fpsUpdate);
-
-    private final DeltaStepper upsUpdater = new DeltaStepper(intervalUps, this::upsUpdate);
 
     private final Paint fpsText = new Paint();
 
@@ -145,27 +141,8 @@ public class Game {
             return;
         }
         // Step updates.
-        upsUpdater.update(deltaTime);
         fpsUpdater.update(deltaTime);
         // Immediate updates.
-    }
-
-    private boolean upsUpdate(long deltaTime) {
-//        if (secondCount < 60) {
-//            ++secondCount;
-//        }
-//        if (secondCount == 60) {
-//            if (!finished) {
-//                finished = true;
-//                try {
-//                    runnable.run();
-//                } catch (final Exception e) {
-//                    e.printStackTrace();
-//                }
-//                spinnerPaint.setColor(Color.BLACK);
-//            }
-//        }
-        return true;
     }
 
     private boolean fpsUpdate(long deltaTime) {
