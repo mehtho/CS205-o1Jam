@@ -2,8 +2,8 @@ package cs205.a3;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -36,7 +36,14 @@ public class SongListRecyclerViewAdapter extends RecyclerView.Adapter<SongListRe
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
         holder.mContentView.setText(mValues.get(position).getName());
-        holder.itemView.setOnClickListener(x -> System.out.println(mValues.get(position)));
+        holder.itemView.setOnClickListener(x -> {
+            InternalStorage.writeFileOnInternalStorage(holder.itemView.getContext(), "Test", "Test string");
+            Intent intent = new Intent(holder.itemView.getContext(), GameActivity.class);
+            intent.putExtra("songName", mValues.get(position).getName());
+            intent.putExtra("songData", mValues.get(position).getData());
+            intent.putExtra("songAudio", mValues.get(position).getAudio());
+            holder.itemView.getContext().startActivity(intent);
+        });
     }
 
     @Override

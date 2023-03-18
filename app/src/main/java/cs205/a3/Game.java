@@ -26,7 +26,6 @@ public class Game {
     private final static long intervalUps = 1000L;
     private final Runnable runnable;
 
-    private final Object mutex = new Object();
     private final Predicate<Consumer<Canvas>> useCanvas;
 
     private double avgFps = 0.0;

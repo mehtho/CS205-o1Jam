@@ -2,11 +2,8 @@ package cs205.a3;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
-import android.view.View;
 
 import cs205.a3.databinding.GameFullscreenBinding;
 
@@ -17,6 +14,23 @@ public class GameActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.loading);
+        loadFromServer();
+    }
+
+    public void loadFromServer() {
+        Thread downloader = new Thread(() -> {
+            // TODO: Actually downloading call here!
+            int x = Integer.MAX_VALUE;
+            while(x-->0){}
+
+            doSetup();
+        });
+        downloader.start();
+    }
+
+    public void doSetup() {
         binding = GameFullscreenBinding.inflate(getLayoutInflater());
         Game game = Game.game;
         game.setSongName(getIntent().getStringExtra("songName"));
@@ -55,10 +69,6 @@ public class GameActivity extends Activity {
             }
             return false;
         });
-
-        setContentView(R.layout.game_fullscreen);
-        setContentView(binding.getRoot());
+        runOnUiThread(() -> setContentView(binding.getRoot()));
     }
-
-
 }
