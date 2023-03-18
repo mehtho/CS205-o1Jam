@@ -18,7 +18,7 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         SongServer server = SongServer.getInstance(getString(R.string.server));
-        server.getAllSongs();
+        server.startQuerySongs();
 
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();

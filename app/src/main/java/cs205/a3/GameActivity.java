@@ -5,7 +5,10 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.MotionEvent;
 
+import java.io.File;
+
 import cs205.a3.databinding.GameFullscreenBinding;
+import cs205.a3.song.SongServer;
 
 public class GameActivity extends Activity {
     private GameFullscreenBinding binding;
@@ -20,16 +23,24 @@ public class GameActivity extends Activity {
     }
 
     public void loadFromServer() {
+        String songId = getIntent().getStringExtra("songName");
         Thread downloader = new Thread(() -> {
-            // TODO: Actually downloading call here!
-            int x = Integer.MAX_VALUE;
-            while(x-->0){}
+            if(!new File(getFilesDir().getAbsolutePath() + "/songData/" + songId + ".mp3").exists()
+                || !new File(getFilesDir().getAbsolutePath() + "/songData/" + songId + ".osu").exists()
+            ) {
+                SongServer.getInstance(getString(R.string.server))
+                        .downloadSong(songId, getIntent().getStringExtra("songData"),
+                                getIntent().getStringExtra("songAudio"),
+                                getString(R.string.server),
+                                getFilesDir());
+            }
 
             doSetup();
         });
         downloader.start();
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     public void doSetup() {
         binding = GameFullscreenBinding.inflate(getLayoutInflater());
         Game game = Game.game;

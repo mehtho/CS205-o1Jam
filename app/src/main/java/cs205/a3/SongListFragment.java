@@ -39,7 +39,6 @@ public class SongListFragment extends Fragment {
     }
 
     // TODO: Customize parameter initialization
-    @SuppressWarnings("unused")
     public static SongListFragment newInstance(int columnCount) {
         SongListFragment fragment = new SongListFragment();
         Bundle args = new Bundle();
