@@ -5,10 +5,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
+import android.media.MediaPlayer;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -40,13 +38,17 @@ public class Game {
 
     private final Paint noteColor = new Paint();
 
+    private final MediaPlayer songPlayer = new MediaPlayer();
+
+    private String songPath;
+
     private int canvasHeight;
 
     private int canvasWidth;
 
     private String songName;
 
-    private ScoreHandler scoreHandler;
+    private final ScoreHandler scoreHandler;
 
     public Game(final Runnable runnable, final Predicate<Consumer<Canvas>> useCanvas) {
         this.runnable = runnable;
@@ -71,9 +73,23 @@ public class Game {
         Game.game = this;
     }
 
-    public void setSongName(String songName) {
+    public void initSong(String songName) {
         this.songName = songName;
-        System.out.println(songName + "SONG NAME");
+
+        try {
+            songPlayer.setDataSource( songPath + songName + ".mp3");
+            songPlayer.prepare();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void playMusic() {
+        songPlayer.start();
+    }
+
+    public void setSongPath(String songPath) {
+        this.songPath = songPath;
     }
 
     public long getSleepTime() {

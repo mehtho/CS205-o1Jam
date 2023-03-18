@@ -44,7 +44,8 @@ public class GameActivity extends Activity {
     public void doSetup() {
         binding = GameFullscreenBinding.inflate(getLayoutInflater());
         Game game = Game.game;
-        game.setSongName(getIntent().getStringExtra("songName"));
+        game.setSongPath(getFilesDir()+"/songData/");
+        game.initSong(getIntent().getStringExtra("songName"));
 
         binding.button1.setOnTouchListener((v, event) -> {
             if(event.getAction() == MotionEvent.ACTION_DOWN){
