@@ -1,19 +1,17 @@
 package cs205.a3;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import androidx.navigation.ui.AppBarConfiguration;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import cs205.a3.song.SongServer;
 
-public class MainActivity extends Activity {
-
-    private AppBarConfiguration appBarConfiguration;
+public class MainActivity extends FragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +19,11 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         SongServer server = SongServer.getInstance(getString(R.string.server));
         server.getAllSongs();
+
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+        transaction.replace(R.id.song_list_placeholder, new SongListFragment());
+        transaction.commit();
     }
 
     @Override
@@ -46,9 +49,9 @@ public class MainActivity extends Activity {
     }
 
     public void doOnClick(View view) {
-        InternalStorage.writeFileOnInternalStorage(getApplicationContext(), "Test", "Test string");
-        Intent intent = new Intent(this, GameActivity.class);
-        intent.putExtra("songName", "helloworld");
-        startActivity(intent);
+//        InternalStorage.writeFileOnInternalStorage(getApplicationContext(), "Test", "Test string");
+//        Intent intent = new Intent(this, GameActivity.class);
+//        intent.putExtra("songName", "helloworld");
+//        startActivity(intent);
     }
 }

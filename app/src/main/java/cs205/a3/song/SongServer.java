@@ -12,18 +12,18 @@ public class SongServer {
     private static SongServer songServer;
     private final String server;
 
-    private volatile List<String> songs;
+    private volatile List<SongReference> songs;
 
     private SongServer(String server) {
         this.server = server;
         this.songs = new ArrayList<>();
     }
 
-    public List<String> getSongs() {
+    public List<SongReference> getSongs() {
         return songs;
     }
 
-    public void setSongs(List<String> songs) {
+    public void setSongs(List<SongReference> songs) {
         this.songs = songs;
     }
 
@@ -43,8 +43,7 @@ public class SongServer {
 
                 String inputLine;
                 while ((inputLine = in.readLine()) != null) {
-                    System.out.println(inputLine);
-                    JsonUtils.getSongReferences(inputLine).forEach(System.out::println);
+                    songs.addAll(JsonUtils.getSongReferences(inputLine));
                 }
 
                 in.close();
