@@ -37,8 +37,6 @@ public class SongListRecyclerViewAdapter extends RecyclerView.Adapter<SongListRe
         holder.mItem = mValues.get(position);
         holder.mContentView.setText(mValues.get(position).getName());
         holder.itemView.setOnClickListener(x -> {
-            //TODO Replace with non-test
-            InternalStorage.writeFileOnInternalStorage(holder.itemView.getContext(), "Test", "Test string");
             Intent intent = new Intent(holder.itemView.getContext(), GameActivity.class);
             intent.putExtra("songName", mValues.get(position).getName());
             intent.putExtra("songData", mValues.get(position).getData());

@@ -11,7 +11,7 @@ public class GameThread extends Thread {
 
     public void startLoop() {
         isRunning = true;
-        game.playMusic();
+        game.playSong();
         start();
     }
 

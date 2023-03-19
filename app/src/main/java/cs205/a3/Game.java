@@ -7,12 +7,19 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.media.MediaPlayer;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Scanner;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import cs205.a3.scorecalc.Board;
 import cs205.a3.scorecalc.Note;
+import cs205.a3.scorecalc.QueuedNote;
 import cs205.a3.scorecalc.ScoreHandler;
+import cs205.a3.song.NoteTimer;
 
 public class Game {
     public static Game game;
@@ -50,9 +57,14 @@ public class Game {
 
     private final ScoreHandler scoreHandler;
 
+    private final NoteTimer noteTimer;
+
+    private final Queue<QueuedNote> noteQueue = new LinkedList<>();
+
     public Game(final Runnable runnable, final Predicate<Consumer<Canvas>> useCanvas) {
         this.runnable = runnable;
         this.useCanvas = useCanvas;
+        this.noteTimer = new NoteTimer();
 
         this.scoreHandler = new ScoreHandler();
         new Thread(scoreHandler).start();
@@ -79,13 +91,23 @@ public class Game {
         try {
             songPlayer.setDataSource( songPath + songName + ".mp3");
             songPlayer.prepare();
-        } catch (Exception e) {
+
+            File myObj = new File(songPath + songName + ".osu");
+            Scanner myReader = new Scanner(myObj);
+            while (myReader.hasNextLine()) {
+                String[] data = myReader.nextLine().split(",");
+                noteQueue.add(new QueuedNote(Integer.parseInt(data[0]), Integer.parseInt(data[1])));
+            }
+
+            myReader.close();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void playMusic() {
+    public void playSong() {
         songPlayer.start();
+        noteTimer.start();
     }
 
     public void setSongPath(String songPath) {
@@ -120,8 +142,9 @@ public class Game {
         }
 
         // TODO: Replace with proper spawning
-        if(Math.random()<0.01) {
-            board.addNote(0);
+        long millDelta = noteTimer.getDelta();
+        while(!noteQueue.isEmpty() && millDelta > noteQueue.peek().getTime()) {
+            board.addNote(noteQueue.remove().getLane());
         }
 
         for(int lane = 0; lane < 4; lane++) {
