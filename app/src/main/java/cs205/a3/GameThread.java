@@ -1,7 +1,6 @@
 package cs205.a3;
 
 public class GameThread extends Thread {
-    private boolean isRunning = false;
 
     private final Game game;
 
@@ -10,19 +9,19 @@ public class GameThread extends Thread {
     }
 
     public void startLoop() {
-        isRunning = true;
+        game.startRunning();
         game.playSong();
         start();
     }
 
     public void stopLoop() {
-        isRunning = false;
+        game.stopRunning();
     }
 
     @Override
     public void run() {
         super.run();
-        while (isRunning) {
+        while (game.isRunning()) {
             game.draw();
             game_sleep();
             game.update();

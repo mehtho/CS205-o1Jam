@@ -38,8 +38,8 @@ public class NotificationPublisher {
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setPriority(Notification.DEFAULT_ALL)
             .setContentIntent(pendingIntent)
-            .setTicker("CS205")
-            .setContentTitle("Time is up!")
+            .setTicker("o1Jam")
+            .setContentTitle("Game complete!")
             .setContentText("You timer has reached one minute!")
             .setContentInfo("Click to get back to the menu.");
         Notification notification = notificationBuilder.build();

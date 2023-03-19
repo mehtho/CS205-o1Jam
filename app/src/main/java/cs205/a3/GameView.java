@@ -21,6 +21,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     @SuppressLint("ClickableViewAccessibility")
     public GameView(Context context, AttributeSet attributeSet) {
         super(context);
+        game.setContext(context);
         getHolder().addCallback(this);
         setKeepScreenOn(true);
     }

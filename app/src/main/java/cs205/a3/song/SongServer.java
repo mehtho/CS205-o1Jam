@@ -46,6 +46,7 @@ public class SongServer {
                         new InputStreamReader(oracle.openStream()));
 
                 String inputLine;
+                songs.clear();
                 while ((inputLine = in.readLine()) != null) {
                     songs.addAll(JsonUtils.getSongReferences(inputLine));
                 }

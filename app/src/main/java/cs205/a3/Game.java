@@ -1,6 +1,8 @@
 package cs205.a3;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -12,6 +14,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -60,6 +63,12 @@ public class Game {
     private final NoteTimer noteTimer;
 
     private final Queue<QueuedNote> noteQueue = new LinkedList<>();
+
+    private final AtomicBoolean isRunning = new AtomicBoolean(false);
+
+    private boolean isEnding = false;
+
+    private Context context;
 
     public Game(final Runnable runnable, final Predicate<Consumer<Canvas>> useCanvas) {
         this.runnable = runnable;
@@ -141,7 +150,6 @@ public class Game {
             scoreHandler.enqueueScore(-1);
         }
 
-        // TODO: Replace with proper spawning
         long millDelta = noteTimer.getDelta();
         while(!noteQueue.isEmpty() && millDelta > noteQueue.peek().getTime()) {
             board.addNote(noteQueue.remove().getLane());
@@ -172,6 +180,23 @@ public class Game {
                 400.0f, 30.0f,
                 fpsText
         );
+
+        // Init the end if empty
+        if(noteQueue.isEmpty() && !isEnding) {
+            isEnding = true;
+            new Thread(() -> {
+                try{
+                    Thread.sleep(5000);
+
+                    Intent intent = new Intent(context, MainActivity.class);
+                    intent.putExtra("songName", songName);
+                    intent.putExtra("score", scoreHandler.getScore());
+                    context.startActivity(intent);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }).start();
+        }
     }
 
     public void update() {
@@ -200,5 +225,25 @@ public class Game {
         if (point != -2 ){
             scoreHandler.enqueueScore(point);
         }
+    }
+
+    public void startRunning() {
+        isRunning.set(true);
+    }
+
+    public void stopRunning() {
+        isRunning.set(false);
+    }
+
+    public boolean isRunning() {
+        return isRunning.get();
+    }
+
+    public Context getContext() {
+        return context;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
     }
 }

@@ -24,9 +24,7 @@ import cs205.a3.song.SongServer;
  */
 public class SongListFragment extends Fragment {
 
-    // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
-    // TODO: Customize parameters
     private int mColumnCount = 1;
 
     private List<SongReference> songReferenceList = new ArrayList<>();
@@ -38,15 +36,6 @@ public class SongListFragment extends Fragment {
     public SongListFragment() {
     }
 
-    // TODO: Customize parameter initialization
-    public static SongListFragment newInstance(int columnCount) {
-        SongListFragment fragment = new SongListFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +45,7 @@ public class SongListFragment extends Fragment {
         }
 
         songReferenceList = SongServer.getInstance(getString(R.string.server)).getSongs();
+        System.out.println(songReferenceList);
     }
 
     @Override
