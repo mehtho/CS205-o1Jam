@@ -58,6 +58,8 @@ public class Game {
 
     private String songName;
 
+    private String songId;
+
     private final ScoreHandler scoreHandler;
 
     private final NoteTimer noteTimer;
@@ -94,14 +96,15 @@ public class Game {
         Game.game = this;
     }
 
-    public void initSong(String songName) {
+    public void initSong(String songId, String songName) {
+        this.songId = songId;
         this.songName = songName;
 
         try {
-            songPlayer.setDataSource( songPath + songName + ".mp3");
+            songPlayer.setDataSource( songPath + songId + ".mp3");
             songPlayer.prepare();
 
-            File myObj = new File(songPath + songName + ".osu");
+            File myObj = new File(songPath + songId + ".osu");
             Scanner myReader = new Scanner(myObj);
             while (myReader.hasNextLine()) {
                 String[] data = myReader.nextLine().split(",");
@@ -190,6 +193,7 @@ public class Game {
 
                     Intent intent = new Intent(context, EndScreen.class);
                     intent.putExtra("songName", songName);
+                    intent.putExtra("songId", songId);
                     intent.putExtra("score", scoreHandler.getScore());
                     context.startActivity(intent);
                 } catch (InterruptedException e) {

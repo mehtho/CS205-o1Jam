@@ -23,7 +23,7 @@ public class GameActivity extends Activity {
     }
 
     public void loadFromServer() {
-        String songId = getIntent().getStringExtra("songName");
+        String songId = getIntent().getStringExtra("songId");
         Thread downloader = new Thread(() -> {
             if(!new File(getFilesDir().getAbsolutePath() + "/songData/" + songId + ".mp3").exists()
                 || !new File(getFilesDir().getAbsolutePath() + "/songData/" + songId + ".osu").exists()
@@ -45,7 +45,8 @@ public class GameActivity extends Activity {
         binding = GameFullscreenBinding.inflate(getLayoutInflater());
         Game game = Game.game;
         game.setSongPath(getFilesDir()+"/songData/");
-        game.initSong(getIntent().getStringExtra("songName"));
+        game.initSong(getIntent().getStringExtra("songId"),
+                getIntent().getStringExtra("songName"));
 
         binding.button1.setOnTouchListener((v, event) -> {
             if(event.getAction() == MotionEvent.ACTION_DOWN){

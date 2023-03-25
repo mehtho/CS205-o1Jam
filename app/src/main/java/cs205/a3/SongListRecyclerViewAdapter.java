@@ -39,6 +39,7 @@ public class SongListRecyclerViewAdapter extends RecyclerView.Adapter<SongListRe
         holder.itemView.setOnClickListener(x -> {
             Intent intent = new Intent(holder.itemView.getContext(), GameActivity.class);
             intent.putExtra("songName", mValues.get(position).getName());
+            intent.putExtra("songId", mValues.get(position).getId());
             intent.putExtra("songData", mValues.get(position).getData());
             intent.putExtra("songAudio", mValues.get(position).getAudio());
             holder.itemView.getContext().startActivity(intent);

@@ -21,8 +21,8 @@ public class JsonUtils {
             {
                 JSONObject jo = jArray.getJSONObject(i);
                 songs.add(new SongReference(
-                        jo.getString("id"),
                         jo.getString("song_name"),
+                        jo.getString("id"),
                         jo.getString("song_data"),
                         jo.getString("song_audio")));
             }

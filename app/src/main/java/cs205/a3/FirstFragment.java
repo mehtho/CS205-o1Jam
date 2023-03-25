@@ -8,8 +8,8 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.fragment.NavHostFragment;
 import cs205.a3.databinding.FragmentFirstBinding;
+import cs205.a3.song.SongServer;
 
 public class FirstFragment extends Fragment {
 
@@ -20,11 +20,12 @@ private FragmentFirstBinding binding;
             LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState
     ) {
-
-      binding = FragmentFirstBinding.inflate(inflater, container, false);
-        binding.textviewScore.setText("" + getActivity().getIntent().getLongExtra("score", 0));
-        binding.textviewSongName.setText(getActivity().getIntent().getStringExtra("songName"));
-      return binding.getRoot();
+    binding = FragmentFirstBinding.inflate(inflater, container, false);
+    binding.textviewScore.setText("" + getActivity().getIntent().getLongExtra("score", 0));
+    SongServer songServer = SongServer.getInstance(getContext().getString(R.string.server));
+    binding.textviewSongName.setText(getActivity().getIntent()
+            .getStringExtra("songName"));
+    return binding.getRoot();
 
     }
 

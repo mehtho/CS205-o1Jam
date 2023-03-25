@@ -10,6 +10,7 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class SongServer {
 
@@ -23,12 +24,8 @@ public class SongServer {
         this.songs = new ArrayList<>();
     }
 
-    public List<SongReference> getSongs() {
+    public synchronized List<SongReference> getSongs() {
         return songs;
-    }
-
-    public void setSongs(List<SongReference> songs) {
-        this.songs = songs;
     }
 
     public static SongServer getInstance(String server) {
@@ -38,7 +35,7 @@ public class SongServer {
 
         return songServer;
     }
-    public void startQuerySongs() {
+    public synchronized void startQuerySongs() {
         new Thread(() -> {
             try{
                 URL oracle = new URL(server +"/api/collections/songs/records");
