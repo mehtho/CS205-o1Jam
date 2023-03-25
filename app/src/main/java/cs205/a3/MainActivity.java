@@ -47,11 +47,4 @@ public class MainActivity extends FragmentActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-    public void doOnClick(View view) {
-//        InternalStorage.writeFileOnInternalStorage(getApplicationContext(), "Test", "Test string");
-//        Intent intent = new Intent(this, GameActivity.class);
-//        intent.putExtra("songName", "helloworld");
-//        startActivity(intent);
-    }
 }

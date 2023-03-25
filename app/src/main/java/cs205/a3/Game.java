@@ -188,7 +188,7 @@ public class Game {
                 try{
                     Thread.sleep(5000);
 
-                    Intent intent = new Intent(context, MainActivity.class);
+                    Intent intent = new Intent(context, EndScreen.class);
                     intent.putExtra("songName", songName);
                     intent.putExtra("score", scoreHandler.getScore());
                     context.startActivity(intent);
