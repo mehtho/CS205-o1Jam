@@ -233,6 +233,7 @@ public class Game {
 
     public void stopRunning() {
         isRunning.set(false);
+        songPlayer.stop();
     }
 
     public boolean isRunning() {

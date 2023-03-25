@@ -83,4 +83,10 @@ public class GameActivity extends Activity {
         });
         runOnUiThread(() -> setContentView(binding.getRoot()));
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Game.game.stopRunning();
+    }
 }
