@@ -22,7 +22,6 @@ private FragmentFirstBinding binding;
     ) {
     binding = FragmentFirstBinding.inflate(inflater, container, false);
     binding.textviewScore.setText("" + getActivity().getIntent().getLongExtra("score", 0));
-    SongServer songServer = SongServer.getInstance(getContext().getString(R.string.server));
     binding.textviewSongName.setText(getActivity().getIntent()
             .getStringExtra("songName"));
     return binding.getRoot();
@@ -35,6 +34,11 @@ private FragmentFirstBinding binding;
         binding.buttonFirst.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                SongServer songServer = SongServer.getInstance(getContext().getString(R.string.server));
+                songServer.submitScore(getActivity().getIntent()
+                        .getStringExtra("songId"), "Test",
+                        getActivity().getIntent().getLongExtra("score", 0));
+
                 view.getContext().startActivity(new Intent(view.getContext(), MainActivity.class));
             }
         });

@@ -1,16 +1,20 @@
 package cs205.a3.song;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class SongServer {
 
@@ -52,6 +56,35 @@ public class SongServer {
 
             } catch (IOException e) {
                 System.out.println(e);
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    public void submitScore(String songId, String username, long score) {
+        new Thread(() -> {
+            try{
+                URL url = new URL(server +"/api/collections/scores/records");
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
+                conn.setRequestProperty("Accept","application/json");
+                conn.setDoOutput(true);
+                conn.setDoInput(true);
+
+                JSONObject jsonParam = new JSONObject();
+                jsonParam.put("song", songId);
+                jsonParam.put("name", username);
+                jsonParam.put("score", score);
+
+                DataOutputStream os = new DataOutputStream(conn.getOutputStream());
+                os.writeBytes(jsonParam.toString());
+
+                os.flush();
+                os.close();
+                System.out.println(conn.getResponseMessage());
+                conn.disconnect();
+            } catch (IOException | JSONException e) {
                 e.printStackTrace();
             }
         }).start();

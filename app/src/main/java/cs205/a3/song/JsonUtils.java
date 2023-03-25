@@ -32,4 +32,8 @@ public class JsonUtils {
 
         return songs;
     }
+
+    public static String getScoreSubmission(String songId, String username, long score) {
+        return String.format("{'song': '%s','name': '%s', 'score': %d}", songId, username, score);
+    }
 }
