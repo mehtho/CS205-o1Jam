@@ -1,10 +1,16 @@
 package cs205.a3;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -45,6 +51,18 @@ public class SongListRecyclerViewAdapter extends RecyclerView.Adapter<SongListRe
             intent.putExtra("songAudio", mValues.get(position).getAudio());
             holder.itemView.getContext().startActivity(intent);
         });
+        holder.mButton.setOnClickListener(x -> {
+            Bundle bundle = new Bundle();
+            bundle.putString("songId", mValues.get(position).getId() );
+            ScoreFragment fragInfo = new ScoreFragment();
+            fragInfo.setArguments(bundle);
+
+            FragmentActivity activity = (FragmentActivity) holder.itemView.getContext();
+
+            FragmentTransaction transaction = activity.getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.song_list_placeholder, fragInfo);
+            transaction.commit();
+        });
     }
 
     @Override
@@ -54,11 +72,13 @@ public class SongListRecyclerViewAdapter extends RecyclerView.Adapter<SongListRe
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final TextView mContentView;
+        public final Button mButton;
         public SongReference mItem;
 
         public ViewHolder(SongItemBinding binding) {
             super(binding.getRoot());
             mContentView = binding.content;
+            mButton = binding.lbButton;
         }
 
         @Override
