@@ -1,17 +1,17 @@
 package cs205.a3;
 
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import cs205.a3.placeholder.PlaceholderContent.PlaceholderItem;
-import cs205.a3.databinding.SongItemBinding;
-import cs205.a3.song.SongReference;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
+
+import cs205.a3.databinding.SongItemBinding;
+import cs205.a3.placeholder.PlaceholderContent.PlaceholderItem;
+import cs205.a3.song.SongReference;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link PlaceholderItem}.

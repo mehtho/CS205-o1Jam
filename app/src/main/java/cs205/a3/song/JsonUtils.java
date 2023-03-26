@@ -14,11 +14,10 @@ public class JsonUtils {
 
     public static List<SongReference> getSongReferences(String json) {
         List<SongReference> songs = new ArrayList<>();
-        try{
+        try {
             JSONObject jObject = new JSONObject(json);
-            JSONArray jArray =  jObject.getJSONArray("items");
-            for (int i=0; i < jArray.length(); i++)
-            {
+            JSONArray jArray = jObject.getJSONArray("items");
+            for (int i = 0; i < jArray.length(); i++) {
                 JSONObject jo = jArray.getJSONObject(i);
                 songs.add(new SongReference(
                         jo.getString("song_name"),

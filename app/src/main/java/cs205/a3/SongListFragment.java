@@ -2,20 +2,18 @@ package cs205.a3;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import cs205.a3.placeholder.PlaceholderContent;
 import cs205.a3.song.SongReference;
 import cs205.a3.song.SongServer;
 
@@ -62,7 +60,7 @@ public class SongListFragment extends Fragment {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
 
-            while(songReferenceList == null || songReferenceList.isEmpty()) {
+            while (songReferenceList == null || songReferenceList.isEmpty()) {
                 System.out.println("Nothing yet");
             }
 

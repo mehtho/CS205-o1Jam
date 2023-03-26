@@ -21,15 +21,11 @@ public class SongServer {
     private static SongServer songServer;
     private final String server;
 
-    private volatile List<SongReference> songs;
+    private final List<SongReference> songs;
 
     private SongServer(String server) {
         this.server = server;
         this.songs = new ArrayList<>();
-    }
-
-    public synchronized List<SongReference> getSongs() {
-        return songs;
     }
 
     public static SongServer getInstance(String server) {
@@ -39,10 +35,15 @@ public class SongServer {
 
         return songServer;
     }
+
+    public synchronized List<SongReference> getSongs() {
+        return songs;
+    }
+
     public synchronized void startQuerySongs() {
         new Thread(() -> {
-            try{
-                URL oracle = new URL(server +"/api/collections/songs/records");
+            try {
+                URL oracle = new URL(server + "/api/collections/songs/records");
                 BufferedReader in = new BufferedReader(
                         new InputStreamReader(oracle.openStream()));
 
@@ -63,12 +64,12 @@ public class SongServer {
 
     public void submitScore(String songId, String username, long score) {
         new Thread(() -> {
-            try{
-                URL url = new URL(server +"/api/collections/scores/records");
+            try {
+                URL url = new URL(server + "/api/collections/scores/records");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
-                conn.setRequestProperty("Accept","application/json");
+                conn.setRequestProperty("Accept", "application/json");
                 conn.setDoOutput(true);
                 conn.setDoInput(true);
 
@@ -91,13 +92,13 @@ public class SongServer {
     }
 
     public void downloadSong(String id, String data, String audio, String server, File dst) {
-        try{
+        try {
             Thread dataDownload = new Thread(() -> {
-                try{
+                try {
                     String url = server + "/api/files/songs/" + id + "/" + data;
                     ReadableByteChannel readableByteChannel = Channels.newChannel(new URL(url).openStream());
 
-                    FileOutputStream fileOutputStream = new FileOutputStream(dst.getAbsolutePath()+ "/songData/"+id+".osu");
+                    FileOutputStream fileOutputStream = new FileOutputStream(dst.getAbsolutePath() + "/songData/" + id + ".osu");
                     fileOutputStream.getChannel()
                             .transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
                 } catch (IOException e) {
@@ -106,11 +107,11 @@ public class SongServer {
             });
 
             Thread audioDownload = new Thread(() -> {
-                try{
+                try {
                     String url = server + "/api/files/songs/" + id + "/" + audio;
                     ReadableByteChannel readableByteChannel = Channels.newChannel(new URL(url).openStream());
 
-                    FileOutputStream fileOutputStream = new FileOutputStream(dst.getAbsolutePath()+ "/songData/"+id+".mp3");
+                    FileOutputStream fileOutputStream = new FileOutputStream(dst.getAbsolutePath() + "/songData/" + id + ".mp3");
                     fileOutputStream.getChannel()
                             .transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
                 } catch (IOException e) {

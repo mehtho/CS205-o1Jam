@@ -25,8 +25,8 @@ public class GameActivity extends Activity {
     public void loadFromServer() {
         String songId = getIntent().getStringExtra("songId");
         Thread downloader = new Thread(() -> {
-            if(!new File(getFilesDir().getAbsolutePath() + "/songData/" + songId + ".mp3").exists()
-                || !new File(getFilesDir().getAbsolutePath() + "/songData/" + songId + ".osu").exists()
+            if (!new File(getFilesDir().getAbsolutePath() + "/songData/" + songId + ".mp3").exists()
+                    || !new File(getFilesDir().getAbsolutePath() + "/songData/" + songId + ".osu").exists()
             ) {
                 SongServer.getInstance(getString(R.string.server))
                         .downloadSong(songId, getIntent().getStringExtra("songData"),
@@ -44,12 +44,12 @@ public class GameActivity extends Activity {
     public void doSetup() {
         binding = GameFullscreenBinding.inflate(getLayoutInflater());
         Game game = Game.game;
-        game.setSongPath(getFilesDir()+"/songData/");
+        game.setSongPath(getFilesDir() + "/songData/");
         game.initSong(getIntent().getStringExtra("songId"),
                 getIntent().getStringExtra("songName"));
 
         binding.button1.setOnTouchListener((v, event) -> {
-            if(event.getAction() == MotionEvent.ACTION_DOWN){
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 game.tapLane(0);
                 return true;
             }
@@ -58,7 +58,7 @@ public class GameActivity extends Activity {
         });
 
         binding.button2.setOnTouchListener((v, event) -> {
-            if(event.getAction() == MotionEvent.ACTION_DOWN){
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 game.tapLane(1);
                 return true;
             }
@@ -67,7 +67,7 @@ public class GameActivity extends Activity {
         });
 
         binding.button3.setOnTouchListener((v, event) -> {
-            if(event.getAction() == MotionEvent.ACTION_DOWN){
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 game.tapLane(2);
                 return true;
             }
@@ -76,7 +76,7 @@ public class GameActivity extends Activity {
         });
 
         binding.button4.setOnTouchListener((v, event) -> {
-            if(event.getAction() == MotionEvent.ACTION_DOWN){
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 game.tapLane(3);
                 return true;
             }

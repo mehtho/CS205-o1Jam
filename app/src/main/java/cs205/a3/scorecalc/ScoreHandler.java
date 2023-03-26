@@ -3,26 +3,31 @@ package cs205.a3.scorecalc;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class ScoreHandler implements Runnable{
+public class ScoreHandler implements Runnable {
     private volatile long score;
     private volatile int combo;
     private volatile double accuracy;
     private volatile boolean isActive;
 
-    private BlockingQueue<Long> blockingQueue;
+    private final BlockingQueue<Long> blockingQueue;
+
+    public ScoreHandler() {
+        blockingQueue = new LinkedBlockingQueue<>();
+        accuracy = 100.0;
+        isActive = true;
+    }
 
     @Override
     public void run() {
-        while(isActive) {
+        while (isActive) {
             synchronized (this) {
-                try{
+                try {
                     final long inp = blockingQueue.take();
 
                     if (inp == -1) {
                         combo = 0;
-                    }
-                    else {
-                        final long toAdd = (long)(inp * ((1.0 + (combo++ / 25.0))));
+                    } else {
+                        final long toAdd = (long) (inp * ((1.0 + (combo++ / 25.0))));
                         score += toAdd;
                     }
                 } catch (InterruptedException e) {
@@ -34,12 +39,6 @@ public class ScoreHandler implements Runnable{
 
     public void enqueueScore(long score) {
         blockingQueue.offer(score);
-    }
-
-    public ScoreHandler() {
-        blockingQueue = new LinkedBlockingQueue<>();
-        accuracy = 100.0;
-        isActive = true;
     }
 
     public long getScore() {

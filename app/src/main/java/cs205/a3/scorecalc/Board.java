@@ -30,8 +30,8 @@ public class Board {
         board.forEach(lane -> {
             Iterator<Note> iter = lane.iterator();
 
-            while(iter.hasNext()) {
-                if(iter.next().incAge()){
+            while (iter.hasNext()) {
+                if (iter.next().incAge()) {
                     iter.remove();
                     triggerMiss.compareAndSet(false, true);
                 }

@@ -17,19 +17,15 @@ public class Note {
     }
 
     public int getScore() {
-        if(this.age < 10) {
+        if (this.age < 10) {
             return -1;
-        }
-        else if (this.age < 15) {
+        } else if (this.age < 15) {
             return 50;
-        }
-        else if (this.age < 25) {
+        } else if (this.age < 25) {
             return 100;
-        }
-        else if (this.age < 35) {
+        } else if (this.age < 35) {
             return 300;
-        }
-        else{
+        } else {
             return 100;
         }
     }

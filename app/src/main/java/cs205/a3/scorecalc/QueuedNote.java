@@ -1,8 +1,8 @@
 package cs205.a3.scorecalc;
 
-public class QueuedNote implements Comparable<QueuedNote>{
-    private long time;
-    private int lane;
+public class QueuedNote implements Comparable<QueuedNote> {
+    private final long time;
+    private final int lane;
 
     public QueuedNote(long time, int lane) {
         this.time = time;
@@ -19,7 +19,7 @@ public class QueuedNote implements Comparable<QueuedNote>{
 
     @Override
     public int compareTo(QueuedNote queuedNote) {
-        return (int)(time - queuedNote.time);
+        return (int) (time - queuedNote.time);
     }
 
     @Override

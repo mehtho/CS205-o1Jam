@@ -18,7 +18,7 @@ public class NotificationPublisher {
     public static void showNotification(Context context) {
         final String channelId = "my_notifications";
         final Object notificationService = context.getSystemService(Context.NOTIFICATION_SERVICE);
-        NotificationManager notificationManager = (NotificationManager)notificationService;
+        NotificationManager notificationManager = (NotificationManager) notificationService;
         final int importance = NotificationManager.IMPORTANCE_HIGH;
         NotificationChannel notificationChannel = new NotificationChannel(channelId, "My notifications", importance);
         notificationChannel.setDescription("Test notifications");
@@ -33,15 +33,15 @@ public class NotificationPublisher {
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_ONE_SHOT);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, channelId);
         notificationBuilder.setAutoCancel(true)
-            .setDefaults(Notification.DEFAULT_ALL)
-            .setWhen(System.currentTimeMillis())
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setPriority(Notification.DEFAULT_ALL)
-            .setContentIntent(pendingIntent)
-            .setTicker("o1Jam")
-            .setContentTitle("Game complete!")
-            .setContentText("You timer has reached one minute!")
-            .setContentInfo("Click to get back to the menu.");
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setWhen(System.currentTimeMillis())
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setPriority(Notification.DEFAULT_ALL)
+                .setContentIntent(pendingIntent)
+                .setTicker("o1Jam")
+                .setContentTitle("Game complete!")
+                .setContentText("You timer has reached one minute!")
+                .setContentInfo("Click to get back to the menu.");
         Notification notification = notificationBuilder.build();
         notificationManager.notify(1, notification);
     }

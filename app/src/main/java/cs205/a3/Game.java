@@ -25,49 +25,29 @@ import cs205.a3.scorecalc.ScoreHandler;
 import cs205.a3.song.NoteTimer;
 
 public class Game {
-    public static Game game;
-
     private final static int targetFps = 50;
-
     private final static long intervalFps = 1000L;
+    public static Game game;
     private final Runnable runnable;
 
     private final Predicate<Consumer<Canvas>> useCanvas;
-
-    private double avgFps = 0.0;
-
     private final Counter frameCounter = new Counter();
-
     private final ElapsedTimer elapsedTimer = new ElapsedTimer();
-
-    private final DeltaStepper fpsUpdater = new DeltaStepper(intervalFps, this::fpsUpdate);
-
     private final Paint fpsText = new Paint();
-
     private final Board board = new Board();
-
     private final Paint noteColor = new Paint();
-
     private final MediaPlayer songPlayer = new MediaPlayer();
-
-    private String songPath;
-
-    private int canvasHeight;
-
-    private int canvasWidth;
-
-    private String songName;
-
-    private String songId;
-
     private final ScoreHandler scoreHandler;
-
     private final NoteTimer noteTimer;
-
     private final Queue<QueuedNote> noteQueue = new LinkedList<>();
-
     private final AtomicBoolean isRunning = new AtomicBoolean(false);
-
+    private double avgFps = 0.0;
+    private final DeltaStepper fpsUpdater = new DeltaStepper(intervalFps, this::fpsUpdate);
+    private String songPath;
+    private int canvasHeight;
+    private int canvasWidth;
+    private String songName;
+    private String songId;
     private boolean isEnding = false;
 
     private Context context;
@@ -101,7 +81,7 @@ public class Game {
         this.songName = songName;
 
         try {
-            songPlayer.setDataSource( songPath + songId + ".mp3");
+            songPlayer.setDataSource(songPath + songId + ".mp3");
             songPlayer.prepare();
 
             File myObj = new File(songPath + songId + ".osu");
@@ -143,26 +123,26 @@ public class Game {
         if (canvas == null) {
             return;
         }
-        if(songName == null) {
+        if (songName == null) {
             System.out.println("No song name");
             return;
         }
 
         canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
-        if(board.tick()) {
+        if (board.tick()) {
             scoreHandler.enqueueScore(-1);
         }
 
         long millDelta = noteTimer.getDelta();
-        while(!noteQueue.isEmpty() && millDelta > noteQueue.peek().getTime()) {
+        while (!noteQueue.isEmpty() && millDelta > noteQueue.peek().getTime()) {
             board.addNote(noteQueue.remove().getLane());
         }
 
-        for(int lane = 0; lane < 4; lane++) {
-            for(Note note:board.getBoard().get(lane)) {
-                int l = lane * (canvasWidth/4);
-                int t = note.getAge()*(canvasHeight/50);
-                canvas.drawRect(l, t, l + (canvasWidth/4), t + 80, noteColor);
+        for (int lane = 0; lane < 4; lane++) {
+            for (Note note : board.getBoard().get(lane)) {
+                int l = lane * (canvasWidth / 4);
+                int t = note.getAge() * (canvasHeight / 50);
+                canvas.drawRect(l, t, l + (canvasWidth / 4), t + 80, noteColor);
             }
         }
 
@@ -185,10 +165,10 @@ public class Game {
         );
 
         // Init the end if empty
-        if(noteQueue.isEmpty() && !isEnding) {
+        if (noteQueue.isEmpty() && !isEnding) {
             isEnding = true;
             new Thread(() -> {
-                try{
+                try {
                     Thread.sleep(5000);
 
                     Intent intent = new Intent(context, EndScreen.class);
@@ -214,7 +194,7 @@ public class Game {
     }
 
     private boolean fpsUpdate(long deltaTime) {
-        final double fractionTime = intervalFps / (double)deltaTime;
+        final double fractionTime = intervalFps / (double) deltaTime;
         avgFps = frameCounter.getValue() * fractionTime;
         return false;
     }
@@ -226,7 +206,7 @@ public class Game {
 
     public void tapLane(int lane) {
         int point = board.tapLane(lane);
-        if (point != -2 ){
+        if (point != -2) {
             scoreHandler.enqueueScore(point);
         }
     }
