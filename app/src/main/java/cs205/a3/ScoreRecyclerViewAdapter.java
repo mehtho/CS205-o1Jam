@@ -1,26 +1,21 @@
 package cs205.a3;
 
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import cs205.a3.placeholder.PlaceholderContent.PlaceholderItem;
-import cs205.a3.databinding.ScoreFragmentItemBinding;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-/**
- * {@link RecyclerView.Adapter} that can display a {@link PlaceholderItem}.
- * TODO: Replace the implementation with code for your data type.
- */
+import cs205.a3.databinding.ScoreFragmentItemBinding;
+import cs205.a3.scorecalc.Score;
+
 public class ScoreRecyclerViewAdapter extends RecyclerView.Adapter<ScoreRecyclerViewAdapter.ViewHolder> {
 
-    private final List<PlaceholderItem> mValues;
+    private final List<Score> mValues;
 
-    public ScoreRecyclerViewAdapter(List<PlaceholderItem> items) {
+    public ScoreRecyclerViewAdapter(List<Score> items) {
         mValues = items;
     }
 
@@ -34,8 +29,8 @@ public class ScoreRecyclerViewAdapter extends RecyclerView.Adapter<ScoreRecycler
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+        holder.mIdView.setText("" + mValues.get(position).getScore());
+        holder.mContentView.setText(mValues.get(position).getName());
     }
 
     @Override
@@ -46,7 +41,7 @@ public class ScoreRecyclerViewAdapter extends RecyclerView.Adapter<ScoreRecycler
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final TextView mIdView;
         public final TextView mContentView;
-        public PlaceholderItem mItem;
+        public Score mItem;
 
         public ViewHolder(ScoreFragmentItemBinding binding) {
             super(binding.getRoot());

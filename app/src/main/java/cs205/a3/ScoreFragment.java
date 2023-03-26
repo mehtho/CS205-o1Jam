@@ -12,7 +12,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+
 import cs205.a3.placeholder.PlaceholderContent;
+import cs205.a3.scorecalc.Score;
+import cs205.a3.song.SongServer;
 
 /**
  * A fragment representing a list of Items.
@@ -44,7 +51,6 @@ public class ScoreFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Set content view to loading, then load async
 
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
@@ -55,18 +61,41 @@ public class ScoreFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.score_fragment_item_list, container, false);
+        View list = view.findViewById(R.id.list);
 
-        // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
+        if (list instanceof RecyclerView) {
+            Context context = list.getContext();
+            RecyclerView recyclerView = (RecyclerView) list;
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new ScoreRecyclerViewAdapter(PlaceholderContent.ITEMS));
+
+            List<Score> scores = loadScores();
+            System.out.println(scores);
+            recyclerView.setAdapter(new ScoreRecyclerViewAdapter(scores));
         }
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        getView().findViewById(R.id.loading).setVisibility(View.GONE);
+    }
+
+    public List<Score> loadScores() {
+        SongServer songServer = SongServer.getInstance(getString(R.string.server));
+        Future<List<Score>> scoreFuture = songServer.getScoresForSong(this.getArguments().getString("songId"));
+        try{
+            return scoreFuture.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        ArrayList<Score> err = new ArrayList<>();
+        err.add(new Score(0, "Scores not found", "Id"));
+        return err;
     }
 }

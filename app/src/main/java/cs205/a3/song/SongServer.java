@@ -15,6 +15,10 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
+import cs205.a3.scorecalc.Score;
 
 public class SongServer {
 
@@ -126,5 +130,30 @@ public class SongServer {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public Future<List<Score>> getScoresForSong(String songId) {
+        return Executors.newSingleThreadExecutor().submit(() -> {
+            try {
+                URL oracle = new URL(server + String.format("/api/collections/scores/records?filter=(song='%s')&sort=-score", songId));
+                System.out.println(oracle);
+                BufferedReader in = new BufferedReader(
+                        new InputStreamReader(oracle.openStream()));
+
+                List<Score> scores = new ArrayList<>();
+                String inputLine;
+                while ((inputLine = in.readLine()) != null) {
+                    scores.addAll(JsonUtils.getScoreList(inputLine));
+                }
+
+                in.close();
+
+                return scores;
+            } catch (IOException e) {
+                System.out.println(e);
+                e.printStackTrace();
+            }
+            return new ArrayList<>();
+        });
     }
 }
