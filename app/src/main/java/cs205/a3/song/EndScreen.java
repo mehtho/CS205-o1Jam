@@ -1,4 +1,4 @@
-package cs205.a3;
+package cs205.a3.song;
 
 import android.os.Bundle;
 import android.view.View;
@@ -11,6 +11,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.snackbar.Snackbar;
 
+import cs205.a3.R;
 import cs205.a3.databinding.ActivityEndScreenBinding;
 
 public class EndScreen extends AppCompatActivity {

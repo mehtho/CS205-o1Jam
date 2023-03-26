@@ -1,4 +1,4 @@
-package cs205.a3;
+package cs205.a3.song;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import cs205.a3.MainActivity;
+import cs205.a3.R;
 import cs205.a3.databinding.FragmentFirstBinding;
 import cs205.a3.song.SongServer;
 

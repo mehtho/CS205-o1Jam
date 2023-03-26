@@ -1,4 +1,4 @@
-package cs205.a3;
+package cs205.a3.game;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -18,6 +18,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import cs205.a3.song.EndScreen;
 import cs205.a3.scorecalc.Board;
 import cs205.a3.scorecalc.Note;
 import cs205.a3.scorecalc.QueuedNote;

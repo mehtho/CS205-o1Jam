@@ -1,4 +1,4 @@
-package cs205.a3;
+package cs205.a3.game;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -7,6 +7,7 @@ import android.view.MotionEvent;
 
 import java.io.File;
 
+import cs205.a3.R;
 import cs205.a3.databinding.GameFullscreenBinding;
 import cs205.a3.song.SongServer;
 

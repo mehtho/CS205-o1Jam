@@ -1,4 +1,4 @@
-package cs205.a3;
+package cs205.a3.game;
 
 /**
  * A class used as a frame-rate counter.

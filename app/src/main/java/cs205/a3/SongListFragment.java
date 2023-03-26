@@ -1,18 +1,28 @@
 package cs205.a3;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 import cs205.a3.song.SongReference;
 import cs205.a3.song.SongServer;
@@ -44,6 +54,9 @@ public class SongListFragment extends Fragment {
 
         songReferenceList = SongServer.getInstance(getString(R.string.server)).getSongs();
         System.out.println(songReferenceList);
+        if(readNameFile(getContext()) == null) {
+            namePopUp();
+        }
     }
 
     @Override
@@ -67,5 +80,53 @@ public class SongListFragment extends Fragment {
             recyclerView.setAdapter(new SongListRecyclerViewAdapter(songReferenceList));
         }
         return view;
+    }
+
+    public void namePopUp() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Enter your name!");
+
+        View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.name_input, (ViewGroup) getView(), false);
+
+        final EditText input = (EditText) viewInflated.findViewById(R.id.input);
+
+        builder.setView(viewInflated);
+
+
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                System.out.println(input.getText().toString());
+                new Thread(()->{
+                    writeToFile(input.getText().toString(), getContext());
+                }).start();
+            }
+        });
+
+        builder.show();
+    }
+
+    private void writeToFile(String data, Context context) {
+        try {
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("name.txt", Context.MODE_PRIVATE));
+            outputStreamWriter.write(data);
+            outputStreamWriter.close();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String readNameFile(Context context) {
+        try{
+            Scanner sc = new Scanner(new File(context.getFilesDir()+"/name.txt"));
+            if(sc.hasNextLine()) {
+                return sc.nextLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

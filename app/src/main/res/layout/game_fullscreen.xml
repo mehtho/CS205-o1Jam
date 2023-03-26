@@ -9,7 +9,7 @@
     <!-- The primary full-screen view. This can be replaced with whatever view
          is needed to present your content, e.g. VideoView, SurfaceView,
          TextureView, etc. -->
-    <cs205.a3.GameView
+    <cs205.a3.game.GameView
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

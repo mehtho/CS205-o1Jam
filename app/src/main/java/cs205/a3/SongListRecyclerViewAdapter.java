@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import cs205.a3.databinding.SongItemBinding;
+import cs205.a3.game.GameActivity;
 import cs205.a3.placeholder.PlaceholderContent.PlaceholderItem;
 import cs205.a3.song.SongReference;
 
