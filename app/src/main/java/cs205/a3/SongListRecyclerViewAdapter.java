@@ -59,9 +59,14 @@ public class SongListRecyclerViewAdapter extends RecyclerView.Adapter<SongListRe
 
             FragmentActivity activity = (FragmentActivity) holder.itemView.getContext();
 
-            FragmentTransaction transaction = activity.getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.song_list_placeholder, fragInfo);
-            transaction.commit();
+            FragmentTransaction transaction = activity
+                    .getSupportFragmentManager()
+                    .beginTransaction();
+
+            transaction
+                    .replace(R.id.song_list_placeholder, fragInfo)
+                    .addToBackStack( "leaderboard" )
+                    .commit();
         });
     }
 

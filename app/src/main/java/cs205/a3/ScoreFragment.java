@@ -25,10 +25,7 @@ import cs205.a3.song.SongServer;
  * A fragment representing a list of Items.
  */
 public class ScoreFragment extends Fragment {
-
-    // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
-    // TODO: Customize parameters
     private int mColumnCount = 1;
 
     /**
@@ -87,15 +84,19 @@ public class ScoreFragment extends Fragment {
 
     public List<Score> loadScores() {
         SongServer songServer = SongServer.getInstance(getString(R.string.server));
-        Future<List<Score>> scoreFuture = songServer.getScoresForSong(this.getArguments().getString("songId"));
+        Future<List<Score>> scoreFuture
+                = songServer.getScoresForSong(this.getArguments().getString("songId"));
         try{
-            return scoreFuture.get();
+            List<Score> scores = scoreFuture.get();
+            if(!scores.isEmpty()) {
+                return scores;
+            }
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
 
         ArrayList<Score> err = new ArrayList<>();
-        err.add(new Score(0, "Scores not found", "Id"));
+        err.add(new Score(0, "No Scores Yet!", "Id"));
         return err;
     }
 }

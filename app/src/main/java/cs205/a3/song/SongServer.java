@@ -87,7 +87,7 @@ public class SongServer {
 
                 os.flush();
                 os.close();
-                System.out.println(conn.getResponseMessage());
+
                 conn.disconnect();
             } catch (IOException | JSONException e) {
                 e.printStackTrace();
