@@ -1,14 +1,24 @@
 package cs205.a3.scorecalc;
 
 public class Score {
+    private String id;
     private long score;
     private String name;
     private String songId;
 
-    public Score(long score, String name, String songId) {
+    public Score(String id, long score, String name, String songId) {
+        this.id = id;
         this.score = score;
         this.name = name;
         this.songId = songId;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public long getScore() {

@@ -43,6 +43,7 @@ public class JsonUtils {
             for (int i = 0; i < jArray.length(); i++) {
                 JSONObject jo = jArray.getJSONObject(i);
                 scores.add(new Score(
+                        jo.getString("id"),
                         jo.getLong("score"),
                         jo.getString("name"),
                         jo.getString("song")));

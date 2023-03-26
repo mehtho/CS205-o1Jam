@@ -14,7 +14,7 @@ import cs205.a3.R;
 import cs205.a3.databinding.FragmentFirstBinding;
 import cs205.a3.song.SongServer;
 
-public class FirstFragment extends Fragment {
+public class EndScreenFragment extends Fragment {
 
     private FragmentFirstBinding binding;
 
@@ -34,16 +34,13 @@ public class FirstFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        binding.buttonFirst.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SongServer songServer = SongServer.getInstance(getContext().getString(R.string.server));
-                songServer.submitScore(getActivity().getIntent()
-                                .getStringExtra("songId"), LeaderboardUtils.readNameFile(getContext()),
-                        getActivity().getIntent().getLongExtra("score", 0));
+        binding.buttonFirst.setOnClickListener(view1 -> {
+            SongServer songServer = SongServer.getInstance(getContext().getString(R.string.server));
+            songServer.submitScore(getActivity().getIntent()
+                            .getStringExtra("songId"), LeaderboardUtils.readNameFile(getContext()),
+                    getActivity().getIntent().getLongExtra("score", 0));
 
-                view.getContext().startActivity(new Intent(view.getContext(), MainActivity.class));
-            }
+            view1.getContext().startActivity(new Intent(view1.getContext(), MainActivity.class));
         });
     }
 

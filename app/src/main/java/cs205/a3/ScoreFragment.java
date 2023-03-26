@@ -96,7 +96,7 @@ public class ScoreFragment extends Fragment {
         }
 
         ArrayList<Score> err = new ArrayList<>();
-        err.add(new Score(0, "No Scores Yet!", "Id"));
+        err.add(new Score("", 0, "No Scores Yet!", "Id"));
         return err;
     }
 }
