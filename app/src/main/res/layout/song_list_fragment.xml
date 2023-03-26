@@ -10,4 +10,5 @@
     android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
     tools:context=".SongListFragment"
-    tools:listitem="@layout/recycler_view_item" />
+    tools:listitem="@layout/recycler_view_item">
+</androidx.recyclerview.widget.RecyclerView>
