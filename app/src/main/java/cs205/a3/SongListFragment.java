@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import cs205.a3.game.LeaderboardUtils;
 import cs205.a3.song.SongReference;
 import cs205.a3.song.SongServer;
 
@@ -54,7 +55,7 @@ public class SongListFragment extends Fragment {
 
         songReferenceList = SongServer.getInstance(getString(R.string.server)).getSongs();
         System.out.println(songReferenceList);
-        if(readNameFile(getContext()) == null) {
+        if(LeaderboardUtils.readNameFile(getContext()) == null) {
             namePopUp();
         }
     }
@@ -99,34 +100,11 @@ public class SongListFragment extends Fragment {
                 dialog.dismiss();
                 System.out.println(input.getText().toString());
                 new Thread(()->{
-                    writeToFile(input.getText().toString(), getContext());
+                    LeaderboardUtils.writeToFile(input.getText().toString(), getContext());
                 }).start();
             }
         });
 
         builder.show();
-    }
-
-    private void writeToFile(String data, Context context) {
-        try {
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("name.txt", Context.MODE_PRIVATE));
-            outputStreamWriter.write(data);
-            outputStreamWriter.close();
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public String readNameFile(Context context) {
-        try{
-            Scanner sc = new Scanner(new File(context.getFilesDir()+"/name.txt"));
-            if(sc.hasNextLine()) {
-                return sc.nextLine();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 }

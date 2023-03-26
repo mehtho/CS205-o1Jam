@@ -1,4 +1,4 @@
-package cs205.a3.song;
+package cs205.a3.game;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -39,7 +39,7 @@ public class FirstFragment extends Fragment {
             public void onClick(View view) {
                 SongServer songServer = SongServer.getInstance(getContext().getString(R.string.server));
                 songServer.submitScore(getActivity().getIntent()
-                                .getStringExtra("songId"), "Test",
+                                .getStringExtra("songId"), LeaderboardUtils.readNameFile(getContext()),
                         getActivity().getIntent().getLongExtra("score", 0));
 
                 view.getContext().startActivity(new Intent(view.getContext(), MainActivity.class));

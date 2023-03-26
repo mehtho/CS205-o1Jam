@@ -1,4 +1,4 @@
-package cs205.a3.song;
+package cs205.a3.game;
 
 import android.os.Bundle;
 import android.view.View;

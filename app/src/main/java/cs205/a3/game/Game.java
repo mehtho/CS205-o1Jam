@@ -18,7 +18,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import cs205.a3.song.EndScreen;
 import cs205.a3.scorecalc.Board;
 import cs205.a3.scorecalc.Note;
 import cs205.a3.scorecalc.QueuedNote;
