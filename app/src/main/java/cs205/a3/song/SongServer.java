@@ -21,14 +21,17 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import cs205.a3.NIOThreadPool;
 import cs205.a3.scorecalc.Score;
 
 public class SongServer {
-
+    private final Object songMutex = new Object();
     private static SongServer songServer;
     private final String server;
 
     private final List<SongReference> songs;
+
+    private final NIOThreadPool nioThreadPool = new NIOThreadPool();
 
     private SongServer(String server) {
         this.server = server;
@@ -43,30 +46,44 @@ public class SongServer {
         return songServer;
     }
 
-    public synchronized List<SongReference> getSongs() {
-        return songs;
+    public List<SongReference> getSongs() {
+        synchronized (songMutex) {
+            return songs;
+        }
     }
 
-    public synchronized void startQuerySongs() {
-        new Thread(() -> {
+    public void startQuerySongs() {
+        try{
+            List<SongReference> newSongs = querySongs().get();
+            synchronized (songMutex) {
+                songs.clear();
+                songs.addAll(newSongs);
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Future<List<SongReference>> querySongs() {
+        return nioThreadPool.submitSongCall(() -> {
+            ArrayList<SongReference> newSongs = new ArrayList<>();
             try {
                 URL oracle = new URL(server + "/api/collections/songs/records");
                 BufferedReader in = new BufferedReader(
                         new InputStreamReader(oracle.openStream()));
 
                 String inputLine;
-                songs.clear();
                 while ((inputLine = in.readLine()) != null) {
-                    songs.addAll(JsonUtils.getSongReferences(inputLine));
+                    newSongs.addAll(JsonUtils.getSongReferences(inputLine));
                 }
-
                 in.close();
-
+                return newSongs;
             } catch (IOException e) {
                 System.out.println(e);
                 e.printStackTrace();
             }
-        }).start();
+            return newSongs;
+        });
     }
 
     public int submitScore(String songId, String username, long score) {
@@ -161,6 +178,10 @@ public class SongServer {
 
     public void downloadSong(String id, String data, String audio, String server, File dst) {
         try {
+            File directory = new File(dst.getAbsolutePath() + "/songData");
+            if (!directory.exists()) {
+                directory.mkdirs();
+            }
             Thread dataDownload = new Thread(() -> {
                 try {
                     String url = server + "/api/files/songs/" + id + "/" + data;
@@ -197,7 +218,7 @@ public class SongServer {
     }
 
     public Future<List<Score>> getScoresForSong(String songId) {
-        return Executors.newSingleThreadExecutor().submit(() -> {
+        return nioThreadPool.submitScoreCall(() -> {
             try {
                 URL oracle = new URL(server
                         + String.format("/api/collections/scores/records?filter=(song='%s')&sort=-score&perPage=10", songId));
@@ -222,7 +243,7 @@ public class SongServer {
     }
 
     private Future<List<Score>> getScoresForSongAndUser(String songId, String username) {
-        return Executors.newSingleThreadExecutor().submit(() -> {
+        return nioThreadPool.submitScoreCall(() -> {
             try {
                 URL url = new URL(server + "/api/collections/scores/records?filter="
                         + URLEncoder.encode(String.format("(song=\"%s\"&&name=\"%s\")", songId, username), StandardCharsets.UTF_8.toString()));

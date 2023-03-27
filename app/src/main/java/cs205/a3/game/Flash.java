@@ -1,4 +1,4 @@
-package cs205.a3.game.animations;
+package cs205.a3.game;
 
 import android.graphics.Paint;
 

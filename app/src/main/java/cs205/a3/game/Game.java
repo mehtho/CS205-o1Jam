@@ -21,8 +21,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import cs205.a3.game.animations.Flash;
-import cs205.a3.game.animations.FlashUpdaterPool;
+import cs205.a3.NIOThreadPool;
 import cs205.a3.scorecalc.Board;
 import cs205.a3.scorecalc.Note;
 import cs205.a3.scorecalc.QueuedNote;
@@ -59,8 +58,6 @@ public class Game {
     private String songName;
     private String songId;
     private boolean isEnding = false;
-
-    private final FlashUpdaterPool flashUpdaterPool = new FlashUpdaterPool();
     private volatile Flash[] flashes = new Flash[4];
 
     private Context context;
