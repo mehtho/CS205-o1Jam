@@ -5,8 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
+import android.graphics.RectF;
+import android.graphics.Shader;
 import android.media.MediaPlayer;
 
 import java.io.File;
@@ -18,6 +21,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import cs205.a3.game.animations.Flash;
+import cs205.a3.game.animations.FlashUpdaterPool;
 import cs205.a3.scorecalc.Board;
 import cs205.a3.scorecalc.Note;
 import cs205.a3.scorecalc.QueuedNote;
@@ -25,6 +30,9 @@ import cs205.a3.scorecalc.ScoreHandler;
 import cs205.a3.song.NoteTimer;
 
 public class Game {
+    private final Object flashMutex = new Object();
+
+    private static final int OFFSET = 600;
     private final static int targetFps = 50;
     private final static long intervalFps = 1000L;
     public static Game game;
@@ -48,6 +56,9 @@ public class Game {
     private String songName;
     private String songId;
     private boolean isEnding = false;
+
+    private final FlashUpdaterPool flashUpdaterPool = new FlashUpdaterPool();
+    private volatile Flash[] flashes = new Flash[4];
 
     private Context context;
 
@@ -132,7 +143,8 @@ public class Game {
         }
 
         long millDelta = noteTimer.getDelta();
-        while (!noteQueue.isEmpty() && millDelta > noteQueue.peek().getTime()) {
+
+        while (!noteQueue.isEmpty() && millDelta > noteQueue.peek().getTime() - OFFSET) {
             board.addNote(noteQueue.remove().getLane());
         }
 
@@ -161,6 +173,8 @@ public class Game {
                 400.0f, 30.0f,
                 fpsText
         );
+
+        drawFlashes(canvas);
 
         // Init the end if empty
         if (noteQueue.isEmpty() && !isEnding) {
@@ -204,8 +218,49 @@ public class Game {
 
     public void tapLane(int lane) {
         int point = board.tapLane(lane);
+
+        synchronized (flashMutex) {
+            flashes[lane] = new Flash(point, lane);
+        }
+
         if (point != -2) {
             scoreHandler.enqueueScore(point);
+        }
+    }
+
+    private void drawFlashes(Canvas canvas) {
+        for(int i=0;i<4;i++) {
+            if(flashes[i] != null) {
+                int l = i * (canvasWidth / 4);
+                int t = flashes[i].getAge();
+
+                Shader shader;
+                if(flashes[i].getType() == 50) {
+                     shader = new LinearGradient(0, canvasHeight/3, 0, 0, Color.BLUE, Color.BLACK, Shader.TileMode.CLAMP);
+                }
+                else if(flashes[i].getType() == 100) {
+                    shader = new LinearGradient(0, canvasHeight/3, 0, 0, Color.GREEN, Color.BLACK, Shader.TileMode.CLAMP);
+                }
+                else if(flashes[i].getType() == 300) {
+                    shader = new LinearGradient(0, canvasHeight/3, 0, 0, Color.YELLOW, Color.BLACK, Shader.TileMode.CLAMP);
+                }
+                else if(flashes[i].getType() == -1) {
+                    shader = new LinearGradient(0, canvasHeight/3, 0, 0, Color.RED, Color.BLACK, Shader.TileMode.CLAMP);
+                }
+                else {
+                    shader = new LinearGradient(0, canvasHeight/3, 0, 0, Color.WHITE, Color.BLACK, Shader.TileMode.CLAMP);
+                }
+
+                Paint paint = new Paint();
+                paint.setShader(shader);
+
+                canvas.drawRect(new RectF(l, canvasHeight, l + (canvasWidth / 4), ((canvasHeight*2)/3) + (75*t)), paint);
+
+                flashes[i].incAge();
+                if(flashes[i].getAge() > 5) {
+                    flashes[i] = null;
+                }
+            }
         }
     }
 
