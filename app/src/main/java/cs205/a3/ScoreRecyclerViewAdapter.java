@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -65,7 +66,7 @@ public class ScoreRecyclerViewAdapter extends RecyclerView.Adapter<ScoreRecycler
         public final TextView mIdView;
         public final TextView mContentView;
 
-        public final Button mButton;
+        public final ImageButton mButton;
         public Score mItem;
 
         public ViewHolder(ScoreFragmentItemBinding binding) {

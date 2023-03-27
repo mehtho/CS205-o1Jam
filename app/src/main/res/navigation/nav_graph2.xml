@@ -8,6 +8,6 @@
     <fragment
         android:id="@+id/FirstFragment"
         android:name="cs205.a3.game.EndScreenFragment"
-        android:label="Song complete!"
-        tools:layout="@layout/fragment_first" />
+        android:label="@string/first_fragment_label"
+        tools:layout="@layout/end_screen_fragment" />
 </navigation>

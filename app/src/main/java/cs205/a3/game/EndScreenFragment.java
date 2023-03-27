@@ -13,19 +13,19 @@ import androidx.fragment.app.Fragment;
 import cs205.a3.MainActivity;
 import cs205.a3.NotificationPublisher;
 import cs205.a3.R;
-import cs205.a3.databinding.FragmentFirstBinding;
+import cs205.a3.databinding.EndScreenFragmentBinding;
 import cs205.a3.song.SongServer;
 
 public class EndScreenFragment extends Fragment {
 
-    private FragmentFirstBinding binding;
+    private EndScreenFragmentBinding binding;
 
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState
     ) {
-        binding = FragmentFirstBinding.inflate(inflater, container, false);
+        binding = EndScreenFragmentBinding.inflate(inflater, container, false);
         binding.textviewScore.setText("" + getActivity().getIntent().getLongExtra("score", 0));
         binding.textviewSongName.setText(getActivity().getIntent()
                 .getStringExtra("songName"));
