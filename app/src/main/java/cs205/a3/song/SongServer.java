@@ -69,21 +69,34 @@ public class SongServer {
         }).start();
     }
 
-    public void submitScore(String songId, String username, long score) {
+    public int submitScore(String songId, String username, long score) {
         try{
             List<Score> scores = getScoresForSongAndUser(songId, username).get();
 
             for(Score sc : scores) {
                 if(sc.getScore() < score) {
                     updateScoreSubmission(new Score(sc.getId(), score, username, songId));
+                    return topTenCheck(songId, username);
                 }
-                return;
+                return 0;
             }
 
             sendScoreSubmission(songId, username, score);
+            return topTenCheck(songId, username);
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
+            return 0;
         }
+    }
+
+    private int topTenCheck(String songId, String username) throws InterruptedException, ExecutionException {
+        List<Score> topTen = getScoresForSong(songId).get();
+        for(int i=0;i<topTen.size();i++) {
+            if(topTen.get(i).getName().equals(username)) {
+                return i + 1;
+            }
+        }
+        return 0;
     }
 
     private void updateScoreSubmission(Score score) {

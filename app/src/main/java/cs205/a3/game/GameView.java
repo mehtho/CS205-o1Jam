@@ -16,7 +16,7 @@ import cs205.a3.NotificationPublisher;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
-    private final Game game = new Game(this::sendNotification, this::useCanvas);
+    private final Game game = new Game(this::useCanvas);
 
     private GameThread gameThread;
 
@@ -26,10 +26,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         game.setContext(context);
         getHolder().addCallback(this);
         setKeepScreenOn(true);
-    }
-
-    private void sendNotification() {
-        NotificationPublisher.showNotification(getContext());
     }
 
     private boolean useCanvas(final Consumer<Canvas> onDraw) {

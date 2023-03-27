@@ -28,7 +28,6 @@ public class Game {
     private final static int targetFps = 50;
     private final static long intervalFps = 1000L;
     public static Game game;
-    private final Runnable runnable;
 
     private final Predicate<Consumer<Canvas>> useCanvas;
     private final Counter frameCounter = new Counter();
@@ -52,8 +51,7 @@ public class Game {
 
     private Context context;
 
-    public Game(final Runnable runnable, final Predicate<Consumer<Canvas>> useCanvas) {
-        this.runnable = runnable;
+    public Game(final Predicate<Consumer<Canvas>> useCanvas) {
         this.useCanvas = useCanvas;
         this.noteTimer = new NoteTimer();
 

@@ -1,5 +1,6 @@
 package cs205.a3.game;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import cs205.a3.MainActivity;
+import cs205.a3.NotificationPublisher;
 import cs205.a3.R;
 import cs205.a3.databinding.FragmentFirstBinding;
 import cs205.a3.song.SongServer;
@@ -31,14 +33,20 @@ public class EndScreenFragment extends Fragment {
 
     }
 
+    @SuppressLint("DefaultLocale")
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         binding.buttonFirst.setOnClickListener(view1 -> {
             SongServer songServer = SongServer.getInstance(getContext().getString(R.string.server));
-            songServer.submitScore(getActivity().getIntent()
+            int place = songServer.submitScore(getActivity().getIntent()
                             .getStringExtra("songId"), LeaderboardUtils.readNameFile(getContext()),
                     getActivity().getIntent().getLongExtra("score", 0));
+            if (place > 0) {
+                NotificationPublisher.showNotification(getContext(),
+                        String.format("Congrats, you placed #%d on %s", place, getActivity().getIntent()
+                                .getStringExtra("songName")));
+            }
 
             view1.getContext().startActivity(new Intent(view1.getContext(), MainActivity.class));
         });

@@ -15,7 +15,7 @@ import androidx.core.app.NotificationCompat;
  */
 public class NotificationPublisher {
 
-    public static void showNotification(Context context) {
+    public static void showNotification(Context context, String message) {
         final String channelId = "my_notifications";
         final Object notificationService = context.getSystemService(Context.NOTIFICATION_SERVICE);
         NotificationManager notificationManager = (NotificationManager) notificationService;
@@ -39,9 +39,8 @@ public class NotificationPublisher {
                 .setPriority(Notification.DEFAULT_ALL)
                 .setContentIntent(pendingIntent)
                 .setTicker("o1Jam")
-                .setContentTitle("Game complete!")
-                .setContentText("You timer has reached one minute!")
-                .setContentInfo("Click to get back to the menu.");
+                .setContentTitle("Top 10 Score!!")
+                .setContentText(message);
         Notification notification = notificationBuilder.build();
         notificationManager.notify(1, notification);
     }
