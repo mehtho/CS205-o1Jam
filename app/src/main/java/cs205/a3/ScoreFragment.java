@@ -2,23 +2,21 @@ package cs205.a3;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import cs205.a3.placeholder.PlaceholderContent;
 import cs205.a3.scorecalc.Score;
 import cs205.a3.song.SongServer;
 
@@ -61,7 +59,7 @@ public class ScoreFragment extends Fragment {
         View view = inflater.inflate(R.layout.score_fragment_item_list, container, false);
         View list = view.findViewById(R.id.list);
 
-        ((TextView)view.findViewById(R.id.lb_song_name)).setText(this.getArguments().getString("songName"));
+        ((TextView) view.findViewById(R.id.lb_song_name)).setText(this.getArguments().getString("songName"));
 
         if (list instanceof RecyclerView) {
             Context context = list.getContext();
@@ -88,9 +86,9 @@ public class ScoreFragment extends Fragment {
         SongServer songServer = SongServer.getInstance(getString(R.string.server));
         Future<List<Score>> scoreFuture
                 = songServer.getScoresForSong(this.getArguments().getString("songId"));
-        try{
+        try {
             List<Score> scores = scoreFuture.get();
-            if(!scores.isEmpty()) {
+            if (!scores.isEmpty()) {
                 return scores;
             }
         } catch (InterruptedException | ExecutionException e) {

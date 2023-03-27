@@ -4,12 +4,11 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class ScoreHandler implements Runnable {
+    private final BlockingQueue<Long> blockingQueue;
     private volatile long score;
     private volatile int combo;
     private volatile double accuracy;
     private volatile boolean isActive;
-
-    private final BlockingQueue<Long> blockingQueue;
 
     public ScoreHandler() {
         blockingQueue = new LinkedBlockingQueue<>();

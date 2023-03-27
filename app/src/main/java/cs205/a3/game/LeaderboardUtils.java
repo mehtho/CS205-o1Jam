@@ -8,30 +8,29 @@ import java.io.OutputStreamWriter;
 import java.util.Scanner;
 
 public class LeaderboardUtils {
+    private LeaderboardUtils() {
+
+    }
+
     public static void writeToFile(String data, Context context) {
         try {
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("name.txt", Context.MODE_PRIVATE));
             outputStreamWriter.write(data);
             outputStreamWriter.close();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public static String readNameFile(Context context) {
-        try{
-            Scanner sc = new Scanner(new File(context.getFilesDir()+"/name.txt"));
-            if(sc.hasNextLine()) {
+        try {
+            Scanner sc = new Scanner(new File(context.getFilesDir() + "/name.txt"));
+            if (sc.hasNextLine()) {
                 return sc.nextLine();
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
-    }
-
-    private LeaderboardUtils() {
-
     }
 }

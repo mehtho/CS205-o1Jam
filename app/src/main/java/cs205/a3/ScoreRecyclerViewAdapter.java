@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,20 +38,20 @@ public class ScoreRecyclerViewAdapter extends RecyclerView.Adapter<ScoreRecycler
         holder.mContentView.setText(mValues.get(position).getName());
 
         String me = LeaderboardUtils.readNameFile(holder.mButton.getContext());
-        if(me.equals(mValues.get(position).getName())) {
+        if (me.equals(mValues.get(position).getName())) {
             holder.mButton.setOnClickListener(x -> {
                 Intent i = new Intent(Intent.ACTION_SEND);
                 i.setType("message/rfc822");
-                i.putExtra(Intent.EXTRA_EMAIL  , new String[]{"recipient@example.com"});
+                i.putExtra(Intent.EXTRA_EMAIL, new String[]{"recipient@example.com"});
                 i.putExtra(Intent.EXTRA_SUBJECT, "o1Jam high score");
-                i.putExtra(Intent.EXTRA_TEXT   , String.format("I scored %d on %s! Beat that!", mValues.get(position).getScore(), this.songName));
+                i.putExtra(Intent.EXTRA_TEXT, String.format("I scored %d on %s! Beat that!", mValues.get(position).getScore(), this.songName));
                 try {
                     x.getContext().startActivity(Intent.createChooser(i, "Send mail..."));
                 } catch (android.content.ActivityNotFoundException ex) {
                     Toast.makeText(x.getContext(), "There are no email clients installed.", Toast.LENGTH_SHORT).show();
                 }
             });
-        } else{
+        } else {
             holder.mButton.setVisibility(View.INVISIBLE);
         }
     }

@@ -14,15 +14,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 import cs205.a3.game.LeaderboardUtils;
 import cs205.a3.song.SongReference;
@@ -55,7 +48,7 @@ public class SongListFragment extends Fragment {
 
         songReferenceList = SongServer.getInstance(getString(R.string.server)).getSongs();
         System.out.println(songReferenceList);
-        if(LeaderboardUtils.readNameFile(getContext()) == null) {
+        if (LeaderboardUtils.readNameFile(getContext()) == null) {
             namePopUp();
         }
     }
@@ -100,7 +93,7 @@ public class SongListFragment extends Fragment {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 System.out.println(input.getText().toString());
-                new Thread(()->{
+                new Thread(() -> {
                     LeaderboardUtils.writeToFile(input.getText().toString(), getContext());
                 }).start();
             }

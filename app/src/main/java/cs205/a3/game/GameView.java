@@ -12,8 +12,6 @@ import androidx.annotation.NonNull;
 
 import java.util.function.Consumer;
 
-import cs205.a3.NotificationPublisher;
-
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private final Game game = new Game(this::useCanvas);

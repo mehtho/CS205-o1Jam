@@ -64,7 +64,7 @@ public class SongListRecyclerViewAdapter extends RecyclerView.Adapter<SongListRe
 
             transaction
                     .replace(R.id.song_list_placeholder, fragInfo)
-                    .addToBackStack( "leaderboard" )
+                    .addToBackStack("leaderboard")
                     .commit();
         });
     }

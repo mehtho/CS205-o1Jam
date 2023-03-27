@@ -21,7 +21,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import cs205.a3.NIOThreadPool;
 import cs205.a3.scorecalc.Board;
 import cs205.a3.scorecalc.Note;
 import cs205.a3.scorecalc.QueuedNote;
@@ -29,13 +28,11 @@ import cs205.a3.scorecalc.ScoreHandler;
 import cs205.a3.song.NoteTimer;
 
 public class Game {
-    private final Object flashMutex = new Object();
-
     private static final int OFFSET = 600;
     private final static int targetFps = 50;
     private final static long intervalFps = 1000L;
     public static Game game;
-
+    private final Object flashMutex = new Object();
     private final Predicate<Consumer<Canvas>> useCanvas;
     private final Counter frameCounter = new Counter();
     private final ElapsedTimer elapsedTimer = new ElapsedTimer();
@@ -170,10 +167,9 @@ public class Game {
             for (Note note : board.getBoard().get(lane)) {
                 int l = lane * (canvasWidth / 4);
                 int t = note.getAge() * (canvasHeight / 50);
-                if(lane == 1 || lane == 2) {
+                if (lane == 1 || lane == 2) {
                     canvas.drawRect(l, t, l + (canvasWidth / 4), t + 80, noteColorOdd);
-                }
-                else{
+                } else {
                     canvas.drawRect(l, t, l + (canvasWidth / 4), t + 80, noteColorEven);
                 }
             }
@@ -199,9 +195,9 @@ public class Game {
 
         canvas.drawLine(
                 0,
-                30*(canvasHeight / 50),
+                30 * (canvasHeight / 50),
                 canvasWidth,
-                30*(canvasHeight / 50),
+                30 * (canvasHeight / 50),
                 fpsText);
 
         drawFlashes(canvas);
@@ -259,35 +255,31 @@ public class Game {
     }
 
     private void drawFlashes(Canvas canvas) {
-        for(int i=0;i<4;i++) {
-            if(flashes[i] != null) {
+        for (int i = 0; i < 4; i++) {
+            if (flashes[i] != null) {
                 int l = i * (canvasWidth / 4);
                 int t = flashes[i].getAge();
 
                 Shader shader;
-                if(flashes[i].getType() == 50) {
-                     shader = new LinearGradient(0, canvasHeight/3, 0, 0, Color.BLUE, Color.BLACK, Shader.TileMode.CLAMP);
-                }
-                else if(flashes[i].getType() == 100) {
-                    shader = new LinearGradient(0, canvasHeight/3, 0, 0, Color.GREEN, Color.BLACK, Shader.TileMode.CLAMP);
-                }
-                else if(flashes[i].getType() == 300) {
-                    shader = new LinearGradient(0, canvasHeight/3, 0, 0, Color.YELLOW, Color.BLACK, Shader.TileMode.CLAMP);
-                }
-                else if(flashes[i].getType() == -1) {
-                    shader = new LinearGradient(0, canvasHeight/3, 0, 0, Color.RED, Color.BLACK, Shader.TileMode.CLAMP);
-                }
-                else {
-                    shader = new LinearGradient(0, canvasHeight/3, 0, 0, Color.WHITE, Color.BLACK, Shader.TileMode.CLAMP);
+                if (flashes[i].getType() == 50) {
+                    shader = new LinearGradient(0, canvasHeight / 3, 0, 0, Color.BLUE, Color.BLACK, Shader.TileMode.CLAMP);
+                } else if (flashes[i].getType() == 100) {
+                    shader = new LinearGradient(0, canvasHeight / 3, 0, 0, Color.GREEN, Color.BLACK, Shader.TileMode.CLAMP);
+                } else if (flashes[i].getType() == 300) {
+                    shader = new LinearGradient(0, canvasHeight / 3, 0, 0, Color.YELLOW, Color.BLACK, Shader.TileMode.CLAMP);
+                } else if (flashes[i].getType() == -1) {
+                    shader = new LinearGradient(0, canvasHeight / 3, 0, 0, Color.RED, Color.BLACK, Shader.TileMode.CLAMP);
+                } else {
+                    shader = new LinearGradient(0, canvasHeight / 3, 0, 0, Color.WHITE, Color.BLACK, Shader.TileMode.CLAMP);
                 }
 
                 Paint paint = new Paint();
                 paint.setShader(shader);
 
-                canvas.drawRect(new RectF(l, canvasHeight, l + (canvasWidth / 4), ((canvasHeight*2)/3) + (75*t)), paint);
+                canvas.drawRect(new RectF(l, canvasHeight, l + (canvasWidth / 4), ((canvasHeight * 2) / 3) + (75 * t)), paint);
 
                 flashes[i].incAge();
-                if(flashes[i].getAge() > 5) {
+                if (flashes[i].getAge() > 5) {
                     flashes[i] = null;
                 }
             }

@@ -18,15 +18,14 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import cs205.a3.NIOThreadPool;
 import cs205.a3.scorecalc.Score;
 
 public class SongServer {
-    private final Object songMutex = new Object();
     private static SongServer songServer;
+    private final Object songMutex = new Object();
     private final String server;
 
     private final List<SongReference> songs;
@@ -53,7 +52,7 @@ public class SongServer {
     }
 
     public void startQuerySongs() {
-        try{
+        try {
             List<SongReference> newSongs = querySongs().get();
             synchronized (songMutex) {
                 songs.clear();
@@ -87,11 +86,11 @@ public class SongServer {
     }
 
     public int submitScore(String songId, String username, long score) {
-        try{
+        try {
             List<Score> scores = getScoresForSongAndUser(songId, username).get();
 
-            for(Score sc : scores) {
-                if(sc.getScore() < score) {
+            for (Score sc : scores) {
+                if (sc.getScore() < score) {
                     updateScoreSubmission(new Score(sc.getId(), score, username, songId));
                     return topTenCheck(songId, username);
                 }
@@ -108,8 +107,8 @@ public class SongServer {
 
     private int topTenCheck(String songId, String username) throws InterruptedException, ExecutionException {
         List<Score> topTen = getScoresForSong(songId).get();
-        for(int i=0;i<topTen.size();i++) {
-            if(topTen.get(i).getName().equals(username)) {
+        for (int i = 0; i < topTen.size(); i++) {
+            if (topTen.get(i).getName().equals(username)) {
                 return i + 1;
             }
         }

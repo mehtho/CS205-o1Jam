@@ -1,11 +1,9 @@
 package cs205.a3.game;
 
-import android.graphics.Paint;
-
 public class Flash {
-    private int age = 0;
-    private int type = 0;
-    private int lane = 0;
+    private int age;
+    private int type;
+    private int lane;
 
     public Flash(int type, int lane) {
         this.type = type;
