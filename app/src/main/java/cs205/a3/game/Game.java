@@ -174,6 +174,13 @@ public class Game {
                 fpsText
         );
 
+        canvas.drawLine(
+                0,
+                30*(canvasHeight / 50),
+                canvasWidth,
+                30*(canvasHeight / 50),
+                fpsText);
+
         drawFlashes(canvas);
 
         // Init the end if empty
