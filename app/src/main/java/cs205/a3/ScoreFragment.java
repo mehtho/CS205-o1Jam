@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,6 +60,8 @@ public class ScoreFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.score_fragment_item_list, container, false);
         View list = view.findViewById(R.id.list);
+
+        ((TextView)view.findViewById(R.id.lb_song_name)).setText(this.getArguments().getString("songName"));
 
         if (list instanceof RecyclerView) {
             Context context = list.getContext();

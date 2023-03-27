@@ -41,8 +41,11 @@ public class Game {
     private final Counter frameCounter = new Counter();
     private final ElapsedTimer elapsedTimer = new ElapsedTimer();
     private final Paint fpsText = new Paint();
+    private final Paint comboText = new Paint();
+    private final Paint scoreText = new Paint();
     private final Board board = new Board();
-    private final Paint noteColor = new Paint();
+    private final Paint noteColorOdd = new Paint();
+    private final Paint noteColorEven = new Paint();
     private final MediaPlayer songPlayer = new MediaPlayer();
     private final ScoreHandler scoreHandler;
     private final NoteTimer noteTimer;
@@ -75,11 +78,29 @@ public class Game {
         }
 
         {
-            noteColor.setColor(Color.rgb(255, 0, 255));
-            noteColor.setStyle(Paint.Style.STROKE);
-            noteColor.setAntiAlias(true);
-            noteColor.setStrokeWidth(1);
-            noteColor.setStyle(Paint.Style.FILL);
+            comboText.setColor(Color.rgb(200, 200, 200));
+            comboText.setTextSize(160.0f);
+        }
+
+        {
+            scoreText.setColor(Color.rgb(200, 200, 200));
+            scoreText.setTextSize(120.0f);
+        }
+
+        {
+            noteColorOdd.setColor(Color.rgb(41, 66, 153));
+            noteColorOdd.setStyle(Paint.Style.STROKE);
+            noteColorOdd.setAntiAlias(true);
+            noteColorOdd.setStrokeWidth(1);
+            noteColorOdd.setStyle(Paint.Style.FILL);
+        }
+
+        {
+            noteColorEven.setColor(Color.rgb(230, 191, 85));
+            noteColorEven.setStyle(Paint.Style.STROKE);
+            noteColorEven.setAntiAlias(true);
+            noteColorEven.setStrokeWidth(1);
+            noteColorEven.setStyle(Paint.Style.FILL);
         }
 
         Game.game = this;
@@ -152,26 +173,31 @@ public class Game {
             for (Note note : board.getBoard().get(lane)) {
                 int l = lane * (canvasWidth / 4);
                 int t = note.getAge() * (canvasHeight / 50);
-                canvas.drawRect(l, t, l + (canvasWidth / 4), t + 80, noteColor);
+                if(lane == 1 || lane == 2) {
+                    canvas.drawRect(l, t, l + (canvasWidth / 4), t + 80, noteColorOdd);
+                }
+                else{
+                    canvas.drawRect(l, t, l + (canvasWidth / 4), t + 80, noteColorEven);
+                }
             }
         }
 
         canvas.drawText(
                 String.format("%.2f", avgFps),
-                10.0f, 30.0f,
+                1200.0f, 30.0f,
                 fpsText
         );
 
         canvas.drawText(
                 String.format("%d", scoreHandler.getScore()),
-                200.0f, 30.0f,
-                fpsText
+                0.0f, 100.0f,
+                scoreText
         );
 
         canvas.drawText(
                 String.format("x%d", scoreHandler.getCombo()),
-                400.0f, 30.0f,
-                fpsText
+                0.0f, 300.0f,
+                comboText
         );
 
         canvas.drawLine(
