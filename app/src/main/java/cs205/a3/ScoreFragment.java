@@ -69,9 +69,8 @@ public class ScoreFragment extends Fragment {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
 
-            List<Score> scores = loadScores();
-            System.out.println(scores);
-            recyclerView.setAdapter(new ScoreRecyclerViewAdapter(scores));
+            recyclerView.setAdapter(new ScoreRecyclerViewAdapter(loadScores(),
+                    this.getArguments().getString("songName")));
         }
         return view;
     }

@@ -53,7 +53,8 @@ public class SongListRecyclerViewAdapter extends RecyclerView.Adapter<SongListRe
         });
         holder.mButton.setOnClickListener(x -> {
             Bundle bundle = new Bundle();
-            bundle.putString("songId", mValues.get(position).getId() );
+            bundle.putString("songId", mValues.get(position).getId());
+            bundle.putString("songName", mValues.get(position).getName());
             ScoreFragment fragInfo = new ScoreFragment();
             fragInfo.setArguments(bundle);
 
