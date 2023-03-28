@@ -28,16 +28,10 @@ import cs205.a3.scorecalc.ScoreHandler;
 import cs205.a3.song.NoteTimer;
 
 public class Game {
-    public static Game game;
     private static final int OFFSET = 600;
     private final static int targetFps = 50;
-    private int canvasHeight;
-    private int canvasWidth;
-    private double avgFps = 0.0;
     private final static long intervalFps = 1000L;
-    private String songPath;
-    private String songName;
-    private String songId;
+    public static Game game;
     private final Object flashMutex = new Object();
     private final Predicate<Consumer<Canvas>> useCanvas;
     private final ScoreHandler scoreHandler;
@@ -51,9 +45,15 @@ public class Game {
     private final Paint noteColorOdd = new Paint();
     private final Paint noteColorEven = new Paint();
     private final Board board = new Board();
-    private final DeltaStepper fpsUpdater = new DeltaStepper(intervalFps, this::fpsUpdate);
     private final Queue<QueuedNote> noteQueue = new LinkedList<>();
     private final AtomicBoolean isRunning = new AtomicBoolean(false);
+    private int canvasHeight;
+    private int canvasWidth;
+    private double avgFps = 0.0;
+    private final DeltaStepper fpsUpdater = new DeltaStepper(intervalFps, this::fpsUpdate);
+    private String songPath;
+    private String songName;
+    private String songId;
     private boolean isEnding = false;
     private volatile Flash[] flashes = new Flash[4];
 
@@ -256,6 +256,7 @@ public class Game {
 
     /**
      * Process a tap in a given lane.
+     *
      * @param lane Lane number 0-3
      */
     public void tapLane(int lane) {
@@ -272,6 +273,7 @@ public class Game {
 
     /**
      * Draw tap effects.
+     *
      * @param canvas
      */
     private void drawFlashes(Canvas canvas) {

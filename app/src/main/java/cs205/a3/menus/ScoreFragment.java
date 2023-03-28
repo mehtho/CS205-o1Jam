@@ -1,4 +1,4 @@
-package cs205.a3;
+package cs205.a3.menus;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import cs205.a3.R;
 import cs205.a3.scorecalc.Score;
 import cs205.a3.song.SongServer;
 

@@ -1,4 +1,4 @@
-package cs205.a3;
+package cs205.a3.menus;
 
 import android.content.Intent;
 import android.view.LayoutInflater;

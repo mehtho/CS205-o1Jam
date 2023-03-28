@@ -1,13 +1,12 @@
-package cs205.a3;
+package cs205.a3.menus;
 
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import cs205.a3.R;
 import cs205.a3.song.SongServer;
 
 public class MainActivity extends FragmentActivity {

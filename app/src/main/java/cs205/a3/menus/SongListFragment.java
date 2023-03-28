@@ -1,8 +1,7 @@
-package cs205.a3;
+package cs205.a3.menus;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
+import cs205.a3.R;
 import cs205.a3.game.LeaderboardUtils;
 import cs205.a3.song.SongReference;
 import cs205.a3.song.SongServer;

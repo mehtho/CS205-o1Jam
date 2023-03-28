@@ -32,7 +32,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         app:layoutManager="LinearLayoutManager"
-        tools:context=".ScoreFragment"
+        tools:context=".menus.ScoreFragment"
         tools:listitem="@layout/score_fragment_item"/>
     <include layout="@layout/loading"
         android:id="@+id/loading"/>

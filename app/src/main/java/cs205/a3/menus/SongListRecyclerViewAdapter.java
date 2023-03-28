@@ -1,4 +1,4 @@
-package cs205.a3;
+package cs205.a3.menus;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+import cs205.a3.R;
 import cs205.a3.databinding.SongItemBinding;
 import cs205.a3.game.GameActivity;
 import cs205.a3.placeholder.PlaceholderContent.PlaceholderItem;

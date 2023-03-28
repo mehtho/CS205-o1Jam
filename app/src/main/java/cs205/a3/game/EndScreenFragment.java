@@ -10,10 +10,10 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import cs205.a3.MainActivity;
-import cs205.a3.NotificationPublisher;
 import cs205.a3.R;
 import cs205.a3.databinding.EndScreenFragmentBinding;
+import cs205.a3.menus.MainActivity;
+import cs205.a3.menus.NotificationPublisher;
 import cs205.a3.song.SongServer;
 
 public class EndScreenFragment extends Fragment {

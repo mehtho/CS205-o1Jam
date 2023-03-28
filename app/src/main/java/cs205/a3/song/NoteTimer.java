@@ -3,10 +3,6 @@ package cs205.a3.song;
 public class NoteTimer {
     private long startTime;
 
-    public NoteTimer() {
-
-    }
-
     public long getDelta() {
         return System.currentTimeMillis() - startTime;
     }
