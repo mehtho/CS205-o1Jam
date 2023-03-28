@@ -39,13 +39,16 @@ public class EndScreenFragment extends Fragment {
 
         binding.buttonFirst.setOnClickListener(view1 -> {
             SongServer songServer = SongServer.getInstance(getContext().getString(R.string.server));
-            int place = songServer.submitScore(getActivity().getIntent()
-                            .getStringExtra("songId"), LeaderboardUtils.readNameFile(getContext()),
-                    getActivity().getIntent().getLongExtra("score", 0));
+            Intent intent = getActivity().getIntent();
+
+            int place = songServer.submitScore(intent.getStringExtra("songId"),
+                    LeaderboardUtils.readNameFile(getContext()),
+                    intent.getLongExtra("score", 0));
+
             if (place > 0) {
                 NotificationPublisher.showNotification(getContext(),
-                        String.format("Congrats, you placed #%d on %s", place, getActivity().getIntent()
-                                .getStringExtra("songName")));
+                        String.format("Congrats, you placed #%d on %s", place,
+                                intent.getStringExtra("songName")));
             }
 
             view1.getContext().startActivity(new Intent(view1.getContext(), MainActivity.class));

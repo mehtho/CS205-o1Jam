@@ -22,7 +22,8 @@ import cs205.a3.song.SongReference;
  * {@link RecyclerView.Adapter} that can display a {@link PlaceholderItem}.
  * TODO: Replace the implementation with code for your data type.
  */
-public class SongListRecyclerViewAdapter extends RecyclerView.Adapter<SongListRecyclerViewAdapter.ViewHolder> {
+public class SongListRecyclerViewAdapter
+        extends RecyclerView.Adapter<SongListRecyclerViewAdapter.ViewHolder> {
 
     private final List<SongReference> mValues;
 
@@ -33,7 +34,8 @@ public class SongListRecyclerViewAdapter extends RecyclerView.Adapter<SongListRe
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        return new ViewHolder(SongItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
+        return new ViewHolder(SongItemBinding.inflate(LayoutInflater.from(parent.getContext()),
+                parent, false));
 
     }
 

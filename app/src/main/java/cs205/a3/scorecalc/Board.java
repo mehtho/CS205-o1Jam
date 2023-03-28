@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Board {
+    private final Object mutex = new Object();
     private final List<LinkedList<Note>> board;
 
     public Board() {
@@ -16,36 +17,43 @@ public class Board {
         }
     }
 
-    public synchronized List<LinkedList<Note>> getBoard() {
-        return board;
+    public List<LinkedList<Note>> getBoard() {
+        synchronized (mutex) {
+            return board;
+        }
     }
 
-    public synchronized void addNote(int lane) {
-        board.get(lane).add(new Note());
+    public void addNote(int lane) {
+        synchronized (mutex) {
+            board.get(lane).add(new Note());
+        }
     }
 
-    public synchronized boolean tick() {
+    public boolean tick() {
         AtomicBoolean triggerMiss = new AtomicBoolean(false);
+        synchronized (mutex) {
+            board.forEach(lane -> {
+                Iterator<Note> iter = lane.iterator();
 
-        board.forEach(lane -> {
-            Iterator<Note> iter = lane.iterator();
-
-            while (iter.hasNext()) {
-                if (iter.next().incAge()) {
-                    iter.remove();
-                    triggerMiss.compareAndSet(false, true);
+                while (iter.hasNext()) {
+                    if (iter.next().incAge()) {
+                        iter.remove();
+                        triggerMiss.compareAndSet(false, true);
+                    }
                 }
-            }
-        });
+            });
 
-        return triggerMiss.get();
+            return triggerMiss.get();
+        }
     }
 
-    public synchronized int tapLane(int laneNo) {
-        LinkedList<Note> lane = board.get(laneNo);
+    public int tapLane(int laneNo) {
+        synchronized (mutex) {
+            LinkedList<Note> lane = board.get(laneNo);
 
-        if (!lane.isEmpty()) {
-            return lane.pop().getScore();
+            if (!lane.isEmpty()) {
+                return lane.pop().getScore();
+            }
         }
         return -2;
     }

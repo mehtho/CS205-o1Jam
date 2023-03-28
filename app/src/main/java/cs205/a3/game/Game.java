@@ -28,32 +28,32 @@ import cs205.a3.scorecalc.ScoreHandler;
 import cs205.a3.song.NoteTimer;
 
 public class Game {
+    public static Game game;
     private static final int OFFSET = 600;
     private final static int targetFps = 50;
+    private int canvasHeight;
+    private int canvasWidth;
+    private double avgFps = 0.0;
     private final static long intervalFps = 1000L;
-    public static Game game;
+    private String songPath;
+    private String songName;
+    private String songId;
     private final Object flashMutex = new Object();
     private final Predicate<Consumer<Canvas>> useCanvas;
+    private final ScoreHandler scoreHandler;
+    private final NoteTimer noteTimer;
     private final Counter frameCounter = new Counter();
     private final ElapsedTimer elapsedTimer = new ElapsedTimer();
+    private final MediaPlayer songPlayer = new MediaPlayer();
     private final Paint fpsText = new Paint();
     private final Paint comboText = new Paint();
     private final Paint scoreText = new Paint();
-    private final Board board = new Board();
     private final Paint noteColorOdd = new Paint();
     private final Paint noteColorEven = new Paint();
-    private final MediaPlayer songPlayer = new MediaPlayer();
-    private final ScoreHandler scoreHandler;
-    private final NoteTimer noteTimer;
+    private final Board board = new Board();
+    private final DeltaStepper fpsUpdater = new DeltaStepper(intervalFps, this::fpsUpdate);
     private final Queue<QueuedNote> noteQueue = new LinkedList<>();
     private final AtomicBoolean isRunning = new AtomicBoolean(false);
-    private double avgFps = 0.0;
-    private final DeltaStepper fpsUpdater = new DeltaStepper(intervalFps, this::fpsUpdate);
-    private String songPath;
-    private int canvasHeight;
-    private int canvasWidth;
-    private String songName;
-    private String songId;
     private boolean isEnding = false;
     private volatile Flash[] flashes = new Flash[4];
 
@@ -144,19 +144,27 @@ public class Game {
 
     @SuppressLint("DefaultLocale")
     private void draw(Canvas canvas) {
+        /**
+         * Null checks
+         */
         if (canvas == null) {
             return;
         }
         if (songName == null) {
-            System.out.println("No song name");
             return;
         }
 
+        // Wipe canvas
         canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+
+        //Register a miss if a note times out
         if (board.tick()) {
             scoreHandler.enqueueScore(-1);
         }
 
+        /**
+         * Update the state of notes, draw new ones
+         */
         long millDelta = noteTimer.getDelta();
 
         while (!noteQueue.isEmpty() && millDelta > noteQueue.peek().getTime() - OFFSET) {
@@ -175,6 +183,9 @@ public class Game {
             }
         }
 
+        /**
+         * Draw UI components
+         */
         canvas.drawText(
                 String.format("%.2f", avgFps),
                 1200.0f, 30.0f,
@@ -200,6 +211,7 @@ public class Game {
                 30 * (canvasHeight / 50),
                 fpsText);
 
+        //Draw tap effects
         drawFlashes(canvas);
 
         // Init the end if empty
@@ -242,6 +254,10 @@ public class Game {
         this.canvasHeight = canvasHeight;
     }
 
+    /**
+     * Process a tap in a given lane.
+     * @param lane Lane number 0-3
+     */
     public void tapLane(int lane) {
         int point = board.tapLane(lane);
 
@@ -254,6 +270,10 @@ public class Game {
         }
     }
 
+    /**
+     * Draw tap effects.
+     * @param canvas
+     */
     private void drawFlashes(Canvas canvas) {
         for (int i = 0; i < 4; i++) {
             if (flashes[i] != null) {

@@ -10,6 +10,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.channels.Channels;
@@ -118,27 +119,11 @@ public class SongServer {
     private void updateScoreSubmission(Score score) {
         new Thread(() -> {
             try {
-                URL url = new URL(server + "/api/collections/scores/records/" + score.getId());
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("PATCH");
-                conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
-                conn.setRequestProperty("Accept", "application/json");
-                conn.setDoOutput(true);
-                conn.setDoInput(true);
-
                 JSONObject jsonParam = new JSONObject();
                 jsonParam.put("song", score.getSongId());
                 jsonParam.put("name", score.getName());
                 jsonParam.put("score", score.getScore());
-
-                DataOutputStream os = new DataOutputStream(conn.getOutputStream());
-                os.writeBytes(jsonParam.toString());
-
-                os.flush();
-                os.close();
-
-                conn.getResponseMessage();
-                conn.disconnect();
+                sendRequest(new URL(server + "/api/collections/scores/records/" + score.getId()), "PATCH", jsonParam);
             } catch (IOException | JSONException e) {
                 e.printStackTrace();
             }
@@ -148,31 +133,35 @@ public class SongServer {
     private void sendScoreSubmission(String songId, String username, long score) {
         new Thread(() -> {
             try {
-                URL url = new URL(server + "/api/collections/scores/records");
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("POST");
-                conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
-                conn.setRequestProperty("Accept", "application/json");
-                conn.setDoOutput(true);
-                conn.setDoInput(true);
-
                 JSONObject jsonParam = new JSONObject();
                 jsonParam.put("song", songId);
                 jsonParam.put("name", username);
                 jsonParam.put("score", score);
 
-                DataOutputStream os = new DataOutputStream(conn.getOutputStream());
-                os.writeBytes(jsonParam.toString());
-
-                os.flush();
-                os.close();
-
-                conn.getResponseMessage();
-                conn.disconnect();
+                sendRequest(new URL(server + "/api/collections/scores/records"),
+                        "POST", jsonParam);
             } catch (IOException | JSONException e) {
                 e.printStackTrace();
             }
         }).start();
+    }
+
+    private void sendRequest(URL url, String method, JSONObject jsonObject) throws IOException {
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod(method);
+        conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
+        conn.setRequestProperty("Accept", "application/json");
+        conn.setDoOutput(true);
+        conn.setDoInput(true);
+
+        DataOutputStream os = new DataOutputStream(conn.getOutputStream());
+        os.writeBytes(jsonObject.toString());
+
+        os.flush();
+        os.close();
+
+        conn.getResponseMessage();
+        conn.disconnect();
     }
 
     public void downloadSong(String id, String data, String audio, String server, File dst) {

@@ -83,20 +83,16 @@ public class SongListFragment extends Fragment {
 
         View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.name_input, (ViewGroup) getView(), false);
 
-        final EditText input = (EditText) viewInflated.findViewById(R.id.input);
+        final EditText input = viewInflated.findViewById(R.id.input);
 
         builder.setView(viewInflated);
 
 
-        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                System.out.println(input.getText().toString());
-                new Thread(() -> {
-                    LeaderboardUtils.writeToFile(input.getText().toString(), getContext());
-                }).start();
-            }
+        builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
+            dialog.dismiss();
+            System.out.println(input.getText().toString());
+            new Thread(() -> LeaderboardUtils.writeToFile(input.getText().toString(),
+                    getContext())).start();
         });
 
         builder.show();

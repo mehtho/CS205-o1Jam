@@ -34,7 +34,6 @@ public class ScoreFragment extends Fragment {
     public ScoreFragment() {
     }
 
-    // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
     public static ScoreFragment newInstance(int columnCount) {
         ScoreFragment fragment = new ScoreFragment();

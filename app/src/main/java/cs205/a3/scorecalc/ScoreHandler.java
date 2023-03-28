@@ -7,12 +7,10 @@ public class ScoreHandler implements Runnable {
     private final BlockingQueue<Long> blockingQueue;
     private volatile long score;
     private volatile int combo;
-    private volatile double accuracy;
     private volatile boolean isActive;
 
     public ScoreHandler() {
         blockingQueue = new LinkedBlockingQueue<>();
-        accuracy = 100.0;
         isActive = true;
     }
 
@@ -44,24 +42,8 @@ public class ScoreHandler implements Runnable {
         return score;
     }
 
-    public void setScore(long score) {
-        this.score = score;
-    }
-
     public int getCombo() {
         return combo;
-    }
-
-    public void setCombo(int combo) {
-        this.combo = combo;
-    }
-
-    public double getAccuracy() {
-        return accuracy;
-    }
-
-    public void setAccuracy(double accuracy) {
-        this.accuracy = accuracy;
     }
 
     public boolean isActive() {
