@@ -1,6 +1,6 @@
 package cs205.a3.song;
 
-public class NoteTimer {
+public class MillDeltaTimer {
     private long startTime;
 
     public long getDelta() {

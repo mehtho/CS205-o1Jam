@@ -1,6 +1,7 @@
 package cs205.a3.game;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
@@ -25,7 +26,7 @@ import cs205.a3.scorecalc.Board;
 import cs205.a3.scorecalc.Note;
 import cs205.a3.scorecalc.QueuedNote;
 import cs205.a3.scorecalc.ScoreHandler;
-import cs205.a3.song.NoteTimer;
+import cs205.a3.song.MillDeltaTimer;
 
 public class Game {
     private static final int OFFSET = 600;
@@ -34,8 +35,8 @@ public class Game {
     public static Game game;
     private final Object flashMutex = new Object();
     private final Predicate<Consumer<Canvas>> useCanvas;
-    private final ScoreHandler scoreHandler;
-    private final NoteTimer noteTimer;
+    private final ScoreHandler scoreHandler = new ScoreHandler();
+    private final MillDeltaTimer noteTimer = new MillDeltaTimer();
     private final Counter frameCounter = new Counter();
     private final ElapsedTimer elapsedTimer = new ElapsedTimer();
     private final MediaPlayer songPlayer = new MediaPlayer();
@@ -51,24 +52,44 @@ public class Game {
     private int canvasWidth;
     private double avgFps = 0.0;
     private final DeltaStepper fpsUpdater = new DeltaStepper(intervalFps, this::fpsUpdate);
+    private final DeltaStepper clockUpdater = new DeltaStepper(intervalFps, this::clockUpdate);
+    private final MillDeltaTimer clockTimer = new MillDeltaTimer();
     private String songPath;
     private String songName;
     private String songId;
     private boolean isEnding = false;
     private volatile Flash[] flashes = new Flash[4];
 
+    private int maxTime = 1;
+    private RectF spinningTimer = new RectF(1210F, 0F, 1410F, 200F);
+    private String timerText = "00:00";
+
     private Context context;
+
+    private final Thread transition = new Thread(() -> {
+        try {
+            Thread.sleep(5000);
+
+            Intent intent = new Intent(context, EndScreen.class);
+            intent.putExtra("songName", songName);
+            intent.putExtra("songId", songId);
+            intent.putExtra("score", scoreHandler.getScore());
+
+            context.startActivity(intent);
+            ((Activity) context).finish();
+        } catch (InterruptedException e) {
+            // Do nothing
+        }
+    });
 
     public Game(final Predicate<Consumer<Canvas>> useCanvas) {
         this.useCanvas = useCanvas;
-        this.noteTimer = new NoteTimer();
-
-        this.scoreHandler = new ScoreHandler();
         new Thread(scoreHandler).start();
 
         {
             fpsText.setColor(Color.rgb(200, 200, 200));
             fpsText.setTextSize(40.0f);
+            fpsText.setStyle(Paint.Style.FILL);
         }
 
         {
@@ -113,6 +134,9 @@ public class Game {
             while (myReader.hasNextLine()) {
                 String[] data = myReader.nextLine().split(",");
                 noteQueue.add(new QueuedNote(Integer.parseInt(data[0]), Integer.parseInt(data[1])));
+                if(!myReader.hasNextLine()) {
+                    maxTime = Integer.parseInt(data[0]);
+                }
             }
 
             myReader.close();
@@ -124,6 +148,7 @@ public class Game {
     public void playSong() {
         songPlayer.start();
         noteTimer.start();
+        clockTimer.start();
     }
 
     public void setSongPath(String songPath) {
@@ -188,7 +213,13 @@ public class Game {
          */
         canvas.drawText(
                 String.format("%.2f", avgFps),
-                1200.0f, 30.0f,
+                1000.0f, 30.0f,
+                fpsText
+        );
+
+        canvas.drawText(
+                timerText,
+                1230.0f, 300.0f,
                 fpsText
         );
 
@@ -211,25 +242,20 @@ public class Game {
                 30 * (canvasHeight / 50),
                 fpsText);
 
+        canvas.drawArc(
+                spinningTimer,
+                0F,
+                (float) (Math.min(1.0,(float)millDelta / maxTime) * 360),
+                true,
+                fpsText);
+
         //Draw tap effects
         drawFlashes(canvas);
 
         // Init the end if empty
         if (noteQueue.isEmpty() && !isEnding) {
             isEnding = true;
-            new Thread(() -> {
-                try {
-                    Thread.sleep(5000);
-
-                    Intent intent = new Intent(context, EndScreen.class);
-                    intent.putExtra("songName", songName);
-                    intent.putExtra("songId", songId);
-                    intent.putExtra("score", scoreHandler.getScore());
-                    context.startActivity(intent);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }).start();
+            transition.start();
         }
     }
 
@@ -240,12 +266,22 @@ public class Game {
         }
         // Step updates.
         fpsUpdater.update(deltaTime);
+        clockUpdater.update(deltaTime);
         // Immediate updates.
     }
 
     private boolean fpsUpdate(long deltaTime) {
         final double fractionTime = intervalFps / (double) deltaTime;
         avgFps = frameCounter.getValue() * fractionTime;
+        return false;
+    }
+
+    private boolean clockUpdate(long deltaTime) {
+        long totalSeconds = clockTimer.getDelta() / 1000;
+        long seconds = totalSeconds % 60;
+        long minutes = totalSeconds / 60;
+
+        timerText = String.format("%02d:%02d", minutes, seconds);
         return false;
     }
 
@@ -315,6 +351,7 @@ public class Game {
     public void stopRunning() {
         isRunning.set(false);
         songPlayer.stop();
+        transition.interrupt();
     }
 
     public boolean isRunning() {
