@@ -23,19 +23,37 @@ import java.util.function.Predicate;
 
 import cs205.a3.scorecalc.Board;
 import cs205.a3.scorecalc.Note;
+import cs205.a3.scorecalc.NoteHandler;
 import cs205.a3.scorecalc.QueuedNote;
 import cs205.a3.scorecalc.ScoreHandler;
-import cs205.a3.song.NoteTimer;
 
+/**
+ * This is drawn with 2D graphics!
+ *
+ * It works in real time, since the notes flow whether
+ * the player taps them or not
+ *
+ * 1. Real-time notes are updated synchronously in each frame and move at a constant
+ * rate determined by time instead of frame
+ *
+ * 2. Notes are moved down in predetermined intervals, with each movement occurring
+ * at a fixed rate
+ *
+ * 3. Asynchronous elements such as Flashes are updated in separate threads
+ *
+ * It's a fun interactive experience
+ *
+ * Taps are processed by the ScoreHandler in parallel through a queue,
+ * and the score is read back to be displayed in a synchronised manner
+ *
+ */
 public class Game {
-    private static final int OFFSET = 600;
     private final static int targetFps = 50;
     private final static long intervalFps = 1000L;
     public static Game game;
     private final Object flashMutex = new Object();
     private final Predicate<Consumer<Canvas>> useCanvas;
-    private final ScoreHandler scoreHandler;
-    private final NoteTimer noteTimer;
+    private final ScoreHandler scoreHandler = new ScoreHandler();
     private final Counter frameCounter = new Counter();
     private final ElapsedTimer elapsedTimer = new ElapsedTimer();
     private final MediaPlayer songPlayer = new MediaPlayer();
@@ -45,7 +63,7 @@ public class Game {
     private final Paint noteColorOdd = new Paint();
     private final Paint noteColorEven = new Paint();
     private final Board board = new Board();
-    private final Queue<QueuedNote> noteQueue = new LinkedList<>();
+    private NoteHandler noteHandler;
     private final AtomicBoolean isRunning = new AtomicBoolean(false);
     private int canvasHeight;
     private int canvasWidth;
@@ -61,10 +79,6 @@ public class Game {
 
     public Game(final Predicate<Consumer<Canvas>> useCanvas) {
         this.useCanvas = useCanvas;
-        this.noteTimer = new NoteTimer();
-
-        this.scoreHandler = new ScoreHandler();
-        new Thread(scoreHandler).start();
 
         {
             fpsText.setColor(Color.rgb(200, 200, 200));
@@ -110,10 +124,13 @@ public class Game {
 
             File myObj = new File(songPath + songId + ".osu");
             Scanner myReader = new Scanner(myObj);
+            Queue<QueuedNote> noteQueue = new LinkedList<>();
             while (myReader.hasNextLine()) {
                 String[] data = myReader.nextLine().split(",");
                 noteQueue.add(new QueuedNote(Integer.parseInt(data[0]), Integer.parseInt(data[1])));
             }
+
+            noteHandler = new NoteHandler(noteQueue, board, scoreHandler);
 
             myReader.close();
         } catch (IOException e) {
@@ -123,7 +140,8 @@ public class Game {
 
     public void playSong() {
         songPlayer.start();
-        noteTimer.start();
+        new Thread(scoreHandler).start();
+        new Thread(noteHandler).start();
     }
 
     public void setSongPath(String songPath) {
@@ -157,32 +175,6 @@ public class Game {
         // Wipe canvas
         canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
 
-        //Register a miss if a note times out
-        if (board.tick()) {
-            scoreHandler.enqueueScore(-1);
-        }
-
-        /**
-         * Update the state of notes, draw new ones
-         */
-        long millDelta = noteTimer.getDelta();
-
-        while (!noteQueue.isEmpty() && millDelta > noteQueue.peek().getTime() - OFFSET) {
-            board.addNote(noteQueue.remove().getLane());
-        }
-
-        for (int lane = 0; lane < 4; lane++) {
-            for (Note note : board.getBoard().get(lane)) {
-                int l = lane * (canvasWidth / 4);
-                int t = note.getAge() * (canvasHeight / 50);
-                if (lane == 1 || lane == 2) {
-                    canvas.drawRect(l, t, l + (canvasWidth / 4), t + 80, noteColorOdd);
-                } else {
-                    canvas.drawRect(l, t, l + (canvasWidth / 4), t + 80, noteColorEven);
-                }
-            }
-        }
-
         /**
          * Draw UI components
          */
@@ -214,9 +206,23 @@ public class Game {
         //Draw tap effects
         drawFlashes(canvas);
 
+        for (int lane = 0; lane < 4; lane++) {
+            for (Note note : board.getBoard().get(lane)) {
+                int l = lane * (canvasWidth / 4);
+                int t = note.getAge() * (canvasHeight / 50);
+                if (lane == 1 || lane == 2) {
+                    canvas.drawRect(l, t, l + (canvasWidth / 4), t + 80, noteColorOdd);
+                } else {
+                    canvas.drawRect(l, t, l + (canvasWidth / 4), t + 80, noteColorEven);
+                }
+            }
+        }
+
         // Init the end if empty
-        if (noteQueue.isEmpty() && !isEnding) {
-            isEnding = true;
+        if (board.isEnding() && noteHandler.isActive()) {
+            noteHandler.end();
+            scoreHandler.end();
+
             new Thread(() -> {
                 try {
                     Thread.sleep(5000);
