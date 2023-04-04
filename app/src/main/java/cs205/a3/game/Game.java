@@ -29,40 +29,59 @@ import cs205.a3.scorecalc.ScoreHandler;
 import cs205.a3.song.MillDeltaTimer;
 
 public class Game {
-    private static final int OFFSET = 600;
+    // Constants
+    private final static int OFFSET = 600;
     private final static int targetFps = 50;
     private final static long intervalFps = 1000L;
+
+    // Purely cosmetic animations and their mutex
     private final Object flashMutex = new Object();
+    private final Flash[] flashes = new Flash[4];
+
+    // Essential objects
     private final Predicate<Consumer<Canvas>> useCanvas;
+
+    private Context context;
+
+    // Timers and counters
     private final ScoreHandler scoreHandler = new ScoreHandler();
     private final MillDeltaTimer noteTimer = new MillDeltaTimer();
     private final Counter frameCounter = new Counter();
     private final ElapsedTimer elapsedTimer = new ElapsedTimer();
+    private final DeltaStepper fpsUpdater = new DeltaStepper(intervalFps, this::fpsUpdate);
+    private final DeltaStepper clockUpdater = new DeltaStepper(intervalFps, this::clockUpdate);
+    private final RectF spinningTimer = new RectF(1210F, 0F, 1410F, 200F);
+
+    // Audio
     private final MediaPlayer songPlayer = new MediaPlayer();
+
+    // Paint objects for colors, text and shapes
     private final Paint fpsText = new Paint();
     private final Paint comboText = new Paint();
     private final Paint scoreText = new Paint();
     private final Paint noteColorOdd = new Paint();
     private final Paint noteColorEven = new Paint();
+
+    // Board data, for notes
     private final Board board = new Board();
     private final Queue<QueuedNote> noteQueue = new LinkedList<>();
     private final AtomicBoolean isRunning = new AtomicBoolean(false);
     private final MillDeltaTimer clockTimer = new MillDeltaTimer();
+    private double avgFps = 0.0;
+
+    // Variables
     private int canvasHeight;
     private int canvasWidth;
-    private double avgFps = 0.0;
-    private final DeltaStepper fpsUpdater = new DeltaStepper(intervalFps, this::fpsUpdate);
     private String songPath;
     private String songName;
     private String songId;
     private boolean isEnding = false;
-    private final Flash[] flashes = new Flash[4];
     private int maxTime = 1;
-    private final RectF spinningTimer = new RectF(1210F, 0F, 1410F, 200F);
     private String timerText = "00:00";
-    private final DeltaStepper clockUpdater = new DeltaStepper(intervalFps, this::clockUpdate);
-    private Context context;
 
+    /**
+     * Action to transition to end screen
+     */
     private final Thread transition = new Thread(() -> {
         try {
             Thread.sleep(5000);
@@ -79,6 +98,10 @@ public class Game {
         }
     });
 
+    /**
+     * Constructor to initialise canvas paints
+     * @param useCanvas Canvas to draw on
+     */
     public Game(final Predicate<Consumer<Canvas>> useCanvas) {
         this.useCanvas = useCanvas;
         new Thread(scoreHandler).start();
@@ -116,6 +139,11 @@ public class Game {
         }
     }
 
+    /**
+     * Initialises a song so it can be played (As music and as a game).
+     * @param songId Id of song to play
+     * @param songName Name of song to play
+     */
     public void initSong(String songId, String songName) {
         this.songId = songId;
         this.songName = songName;
@@ -140,22 +168,29 @@ public class Game {
         }
     }
 
+    /**
+     * Plays a song when other resources are ready.
+     */
     public void playSong() {
         songPlayer.start();
         noteTimer.start();
         clockTimer.start();
     }
 
-    public void setSongPath(String songPath) {
-        this.songPath = songPath;
-    }
 
+    /**
+     * Calculates time to wait before attempting the next frame
+     * @return time to wait before attempting the next frame
+     */
     public long getSleepTime() {
         final double targetFrameTime = (1000.0 / targetFps);
         final long updateTime = System.currentTimeMillis() - elapsedTimer.getUpdateStartTime();
         return Math.round(targetFrameTime - updateTime);
     }
 
+    /**
+     * Draws a new screen on the canvas
+     */
     public void draw() {
         if (useCanvas.test(this::draw)) {
             frameCounter.increment();
@@ -164,9 +199,6 @@ public class Game {
 
     @SuppressLint("DefaultLocale")
     private void draw(Canvas canvas) {
-        /**
-         * Null checks
-         */
         if (canvas == null) {
             return;
         }
@@ -176,11 +208,6 @@ public class Game {
 
         // Wipe canvas
         canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
-
-        //Register a miss if a note times out
-        if (board.tick()) {
-            scoreHandler.enqueueScore(-1);
-        }
 
         /**
          * Update the state of notes, draw new ones
@@ -254,23 +281,40 @@ public class Game {
         }
     }
 
+    /**
+     * Called about every second to update the fps counter and in-game timer
+     */
     public void update() {
         final long deltaTime = elapsedTimer.progress();
         if (deltaTime <= 0) {
             return;
         }
-        // Step updates.
+
+        //Register a miss if a note times out
+        if (board.tick()) {
+            scoreHandler.enqueueScore(-1);
+        }
+
         fpsUpdater.update(deltaTime);
         clockUpdater.update(deltaTime);
-        // Immediate updates.
     }
 
+    /**
+     * Updates the FPS timer
+     * @param deltaTime Time in the step
+     * @return
+     */
     private boolean fpsUpdate(long deltaTime) {
         final double fractionTime = intervalFps / (double) deltaTime;
         avgFps = frameCounter.getValue() * fractionTime;
         return false;
     }
 
+    /**
+     * Updates the clock that the game displays
+     * @param deltaTime Time in the step
+     * @return
+     */
     private boolean clockUpdate(long deltaTime) {
         long totalSeconds = clockTimer.getDelta() / 1000;
         long seconds = totalSeconds % 60;
@@ -280,6 +324,11 @@ public class Game {
         return false;
     }
 
+    /**
+     * Function to resize the game if necessary
+     * @param canvasWidth
+     * @param canvasHeight
+     */
     public void resize(int canvasWidth, int canvasHeight) {
         this.canvasWidth = canvasWidth;
         this.canvasHeight = canvasHeight;
@@ -313,23 +362,11 @@ public class Game {
                 int l = i * (canvasWidth / 4);
                 int t = flashes[i].getAge();
 
-                Shader shader;
-                if (flashes[i].getType() == 50) {
-                    shader = new LinearGradient(0, canvasHeight / 3, 0, 0, Color.BLUE, Color.BLACK, Shader.TileMode.CLAMP);
-                } else if (flashes[i].getType() == 100) {
-                    shader = new LinearGradient(0, canvasHeight / 3, 0, 0, Color.GREEN, Color.BLACK, Shader.TileMode.CLAMP);
-                } else if (flashes[i].getType() == 300) {
-                    shader = new LinearGradient(0, canvasHeight / 3, 0, 0, Color.YELLOW, Color.BLACK, Shader.TileMode.CLAMP);
-                } else if (flashes[i].getType() == -1) {
-                    shader = new LinearGradient(0, canvasHeight / 3, 0, 0, Color.RED, Color.BLACK, Shader.TileMode.CLAMP);
-                } else {
-                    shader = new LinearGradient(0, canvasHeight / 3, 0, 0, Color.WHITE, Color.BLACK, Shader.TileMode.CLAMP);
-                }
-
-                Paint paint = new Paint();
-                paint.setShader(shader);
-
-                canvas.drawRect(new RectF(l, canvasHeight, l + (canvasWidth / 4), ((canvasHeight * 2) / 3) + (75 * t)), paint);
+                canvas.drawRect(new RectF(l,
+                        canvasHeight,
+                        l + (canvasWidth / 4),
+                        ((canvasHeight * 2) / 3) + (75 * t)),
+                        getShaderPaint(flashes[i].getType()));
 
                 flashes[i].incAge();
                 if (flashes[i].getAge() > 5) {
@@ -339,18 +376,57 @@ public class Game {
         }
     }
 
+    /**
+     * Get paint with shader for a given score
+     * @param score score to get a shader for
+     * @return paint with shader for a given score
+     */
+    private Paint getShaderPaint(int score) {
+        Shader shader;
+        if (score == 50) {
+            shader = new LinearGradient(0, canvasHeight / 3, 0, 0, Color.BLUE, Color.BLACK, Shader.TileMode.CLAMP);
+        } else if (score == 100) {
+            shader = new LinearGradient(0, canvasHeight / 3, 0, 0, Color.GREEN, Color.BLACK, Shader.TileMode.CLAMP);
+        } else if (score == 300) {
+            shader = new LinearGradient(0, canvasHeight / 3, 0, 0, Color.YELLOW, Color.BLACK, Shader.TileMode.CLAMP);
+        } else if (score == -1) {
+            shader = new LinearGradient(0, canvasHeight / 3, 0, 0, Color.RED, Color.BLACK, Shader.TileMode.CLAMP);
+        } else {
+            shader = new LinearGradient(0, canvasHeight / 3, 0, 0, Color.WHITE, Color.BLACK, Shader.TileMode.CLAMP);
+        }
+
+        Paint paint = new Paint();
+        paint.setShader(shader);
+        return paint;
+    }
+
+    /**
+     * Start the game
+     */
     public void startRunning() {
         isRunning.set(true);
     }
 
+    /**
+     * Stop the game
+     */
     public void stopRunning() {
         isRunning.set(false);
         songPlayer.stop();
         transition.interrupt();
     }
 
+    /**
+     * Checks if the game is running
+     * @return if the game is running
+     */
     public boolean isRunning() {
         return isRunning.get();
+    }
+
+    // Getters and setters
+    public void setSongPath(String songPath) {
+        this.songPath = songPath;
     }
 
     public Context getContext() {
