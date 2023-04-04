@@ -44,7 +44,7 @@ public class GameActivity extends Activity {
     @SuppressLint("ClickableViewAccessibility")
     public void doSetup() {
         binding = GameFullscreenBinding.inflate(getLayoutInflater());
-        Game game = Game.game;
+        Game game = GameView.game;
         game.setSongPath(getFilesDir() + "/songData/");
         game.initSong(getIntent().getStringExtra("songId"),
                 getIntent().getStringExtra("songName"));
@@ -89,6 +89,6 @@ public class GameActivity extends Activity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Game.game.stopRunning();
+        GameView.game.stopRunning();
     }
 }

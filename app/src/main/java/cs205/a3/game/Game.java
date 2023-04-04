@@ -32,7 +32,6 @@ public class Game {
     private static final int OFFSET = 600;
     private final static int targetFps = 50;
     private final static long intervalFps = 1000L;
-    public static Game game;
     private final Object flashMutex = new Object();
     private final Predicate<Consumer<Canvas>> useCanvas;
     private final ScoreHandler scoreHandler = new ScoreHandler();
@@ -48,22 +47,20 @@ public class Game {
     private final Board board = new Board();
     private final Queue<QueuedNote> noteQueue = new LinkedList<>();
     private final AtomicBoolean isRunning = new AtomicBoolean(false);
+    private final MillDeltaTimer clockTimer = new MillDeltaTimer();
     private int canvasHeight;
     private int canvasWidth;
     private double avgFps = 0.0;
     private final DeltaStepper fpsUpdater = new DeltaStepper(intervalFps, this::fpsUpdate);
-    private final DeltaStepper clockUpdater = new DeltaStepper(intervalFps, this::clockUpdate);
-    private final MillDeltaTimer clockTimer = new MillDeltaTimer();
     private String songPath;
     private String songName;
     private String songId;
     private boolean isEnding = false;
-    private volatile Flash[] flashes = new Flash[4];
-
+    private final Flash[] flashes = new Flash[4];
     private int maxTime = 1;
-    private RectF spinningTimer = new RectF(1210F, 0F, 1410F, 200F);
+    private final RectF spinningTimer = new RectF(1210F, 0F, 1410F, 200F);
     private String timerText = "00:00";
-
+    private final DeltaStepper clockUpdater = new DeltaStepper(intervalFps, this::clockUpdate);
     private Context context;
 
     private final Thread transition = new Thread(() -> {
@@ -117,8 +114,6 @@ public class Game {
             noteColorEven.setStrokeWidth(1);
             noteColorEven.setStyle(Paint.Style.FILL);
         }
-
-        Game.game = this;
     }
 
     public void initSong(String songId, String songName) {
@@ -134,7 +129,7 @@ public class Game {
             while (myReader.hasNextLine()) {
                 String[] data = myReader.nextLine().split(",");
                 noteQueue.add(new QueuedNote(Integer.parseInt(data[0]), Integer.parseInt(data[1])));
-                if(!myReader.hasNextLine()) {
+                if (!myReader.hasNextLine()) {
                     maxTime = Integer.parseInt(data[0]);
                 }
             }
@@ -245,7 +240,7 @@ public class Game {
         canvas.drawArc(
                 spinningTimer,
                 0F,
-                (float) (Math.min(1.0,(float)millDelta / maxTime) * 360),
+                (float) (Math.min(1.0, (float) millDelta / maxTime) * 360),
                 true,
                 fpsText);
 

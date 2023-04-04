@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import cs205.a3.menus.NIOThreadPool;
+import cs205.a3.menus.NetworkThreadPool;
 import cs205.a3.scorecalc.Score;
 
 public class SongServer {
@@ -30,7 +30,7 @@ public class SongServer {
 
     private final List<SongReference> songs;
 
-    private final NIOThreadPool nioThreadPool = new NIOThreadPool();
+    private final NetworkThreadPool networkThreadPool = new NetworkThreadPool();
 
     private SongServer(String server) {
         this.server = server;
@@ -64,7 +64,7 @@ public class SongServer {
     }
 
     private Future<List<SongReference>> querySongs() {
-        return nioThreadPool.submitSongCall(() -> {
+        return networkThreadPool.submitSongCall(() -> {
             ArrayList<SongReference> newSongs = new ArrayList<>();
             try {
                 URL oracle = new URL(server + "/api/collections/songs/records");
@@ -205,7 +205,7 @@ public class SongServer {
     }
 
     public Future<List<Score>> getScoresForSong(String songId) {
-        return nioThreadPool.submitScoreCall(() -> {
+        return networkThreadPool.submitScoreCall(() -> {
             try {
                 URL oracle = new URL(server
                         + String.format("/api/collections/scores/records?filter=(song='%s')&sort=-score&perPage=10", songId));
@@ -230,7 +230,7 @@ public class SongServer {
     }
 
     private Future<List<Score>> getScoresForSongAndUser(String songId, String username) {
-        return nioThreadPool.submitScoreCall(() -> {
+        return networkThreadPool.submitScoreCall(() -> {
             try {
                 URL url = new URL(server + "/api/collections/scores/records?filter="
                         + URLEncoder.encode(String.format("(song=\"%s\"&&name=\"%s\")", songId, username), StandardCharsets.UTF_8.toString()));

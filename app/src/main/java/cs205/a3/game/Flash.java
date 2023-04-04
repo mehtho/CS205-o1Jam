@@ -2,8 +2,8 @@ package cs205.a3.game;
 
 public class Flash {
     private int age;
-    private int type;
-    private int lane;
+    private final int type;
+    private final int lane;
 
     public Flash(int type, int lane) {
         this.type = type;

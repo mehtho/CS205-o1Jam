@@ -13,15 +13,17 @@ import androidx.annotation.NonNull;
 import java.util.function.Consumer;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
+    public static Game game;
 
-    private final Game game = new Game(this::useCanvas);
+    private final Game gameInstance = new Game(this::useCanvas);
 
     private GameThread gameThread;
 
     @SuppressLint("ClickableViewAccessibility")
     public GameView(Context context, AttributeSet attributeSet) {
         super(context);
-        game.setContext(context);
+        game = gameInstance;
+        gameInstance.setContext(context);
         getHolder().addCallback(this);
         setKeepScreenOn(true);
     }
@@ -50,16 +52,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public void surfaceCreated(@NonNull SurfaceHolder surfaceHolder) {
         if ((gameThread == null) || (gameThread.getState() == Thread.State.TERMINATED)) {
-            gameThread = new GameThread(game);
+            gameThread = new GameThread(gameInstance);
         }
         final Rect rect = getHolder().getSurfaceFrame();
-        game.resize(rect.width(), rect.height());
+        gameInstance.resize(rect.width(), rect.height());
         gameThread.startLoop();
     }
 
     @Override
     public void surfaceChanged(@NonNull SurfaceHolder surfaceHolder, int i, int i1, int i2) {
-        game.resize(i1, i2);
+        gameInstance.resize(i1, i2);
     }
 
     @Override

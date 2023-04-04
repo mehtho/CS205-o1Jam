@@ -9,10 +9,10 @@ import java.util.concurrent.Future;
 import cs205.a3.scorecalc.Score;
 import cs205.a3.song.SongReference;
 
-public class NIOThreadPool {
+public class NetworkThreadPool {
     final ExecutorService pool;
 
-    public NIOThreadPool() {
+    public NetworkThreadPool() {
         final int cpuCores = Math.max(Runtime.getRuntime().availableProcessors() - 1, 1);
         pool = Executors.newFixedThreadPool(cpuCores);
     }
