@@ -10,8 +10,6 @@ public class Board {
     private final Object mutex = new Object();
     private final List<LinkedList<Note>> board;
 
-    private AtomicBoolean endFlag = new AtomicBoolean(false);
-
     public Board() {
         board = new ArrayList<>();
         for (int i = 0; i < 4; i++) {
@@ -29,14 +27,6 @@ public class Board {
         synchronized (mutex) {
             board.get(lane).add(new Note());
         }
-    }
-
-    public boolean isEnding() {
-        return endFlag.get();
-    }
-
-    public void startEnding() {
-        endFlag.compareAndSet(false, true);
     }
 
     public boolean tick() {
@@ -66,17 +56,6 @@ public class Board {
             }
         }
         return -2;
-    }
-
-    public boolean isEmpty() {
-        boolean empty = true;
-        synchronized (mutex) {
-            for (List<Note> lane : board) {
-                empty = empty && lane.isEmpty();
-            }
-        }
-
-        return empty;
     }
 
     public String toString() {

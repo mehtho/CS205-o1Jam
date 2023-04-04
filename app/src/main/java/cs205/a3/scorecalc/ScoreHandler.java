@@ -46,7 +46,11 @@ public class ScoreHandler implements Runnable {
         return combo;
     }
 
-    public void end() {
-        isActive = false;
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 }
