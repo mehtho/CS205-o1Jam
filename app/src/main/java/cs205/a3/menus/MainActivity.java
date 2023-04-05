@@ -39,6 +39,9 @@ public class MainActivity extends FragmentActivity {
         startSongListDisplay();
     }
 
+    /**
+     * Plays a loading screen while songs load
+     */
     private void startSongListDisplay() {
         new Thread(()->{
             int dots = 1;

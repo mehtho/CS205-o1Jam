@@ -35,5 +35,5 @@
         tools:context=".menus.ScoreFragment"
         tools:listitem="@layout/score_fragment_item"/>
     <include layout="@layout/loading"
-        android:id="@+id/loading"/>
+        android:id="@+id/loading_scores"/>
 </LinearLayout>

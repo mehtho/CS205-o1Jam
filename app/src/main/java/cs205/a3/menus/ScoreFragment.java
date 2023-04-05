@@ -69,10 +69,14 @@ public class ScoreFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.score_fragment_item_list, container, false);
+        View view = inflater.inflate(R.layout.score_fragment_item_list,
+                container,
+                false);
+
         View list = view.findViewById(R.id.list);
 
-        ((TextView) view.findViewById(R.id.lb_song_name)).setText(this.getArguments().getString("songName"));
+        ((TextView) view.findViewById(R.id.lb_song_name)).setText(
+                this.getArguments().getString("songName"));
 
         if (list instanceof RecyclerView) {
             Context context = list.getContext();
@@ -97,6 +101,9 @@ public class ScoreFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
     }
 
+    /**
+     * Updates the scoreboard once data has been loaded
+     */
     private void startUpdate() {
         new Thread(()->{
             try {
@@ -108,7 +115,7 @@ public class ScoreFragment extends Fragment {
 
                 getActivity().runOnUiThread(() -> {
                     adapter.notifyDataSetChanged();
-                    getView().findViewById(R.id.loading).setVisibility(View.GONE);
+                    getView().findViewById(R.id.loading_scores).setVisibility(View.GONE);
                 });
             } catch (ExecutionException | InterruptedException e) {
                 throw new RuntimeException(e);

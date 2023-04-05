@@ -16,10 +16,25 @@ import cs205.a3.menus.MainActivity;
 import cs205.a3.menus.NotificationPublisher;
 import cs205.a3.song.SongServer;
 
+/**
+ * Class for the end screen fragment
+ */
 public class EndScreenFragment extends Fragment {
 
     private EndScreenFragmentBinding binding;
 
+    /**
+     * Displays the score achieved after the previous game
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return
+     */
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container,
@@ -33,6 +48,14 @@ public class EndScreenFragment extends Fragment {
 
     }
 
+    /**
+     * Submits the score to the server after going back to the menu. Will send a notification if
+     * the score is a high score on the leaderboard
+     *
+     * @param view The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     */
     @SuppressLint("DefaultLocale")
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);

@@ -6,6 +6,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import cs205.a3.databinding.ActivityEndScreenBinding;
 
+/**
+ * Class for the end screen activity
+ */
 public class EndScreen extends AppCompatActivity {
     private ActivityEndScreenBinding binding;
 

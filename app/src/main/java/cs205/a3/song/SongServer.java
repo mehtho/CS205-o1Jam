@@ -226,7 +226,7 @@ public class SongServer {
                                 .transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
                         success = true;
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        //Do nothing and retry
                     }
                 }
             });
@@ -244,7 +244,7 @@ public class SongServer {
                                 .transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
                         success = true;
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        //Do nothing and retry
                     }
                 }
             });

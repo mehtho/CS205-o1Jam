@@ -28,6 +28,9 @@ import cs205.a3.scorecalc.QueuedNote;
 import cs205.a3.scorecalc.ScoreHandler;
 import cs205.a3.song.MillDeltaTimer;
 
+/**
+ * Class for the actual game
+ */
 public class Game {
     // Constants
     private final static int OFFSET = 600;

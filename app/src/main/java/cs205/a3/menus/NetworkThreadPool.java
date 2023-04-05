@@ -9,6 +9,9 @@ import java.util.concurrent.Future;
 import cs205.a3.scorecalc.Score;
 import cs205.a3.song.SongReference;
 
+/**
+ * Thread pool for tasks requiring network access
+ */
 public class NetworkThreadPool {
     final ExecutorService pool;
 
