@@ -1,4 +1,4 @@
-package cs205.a3.game;
+package cs205.a3.util;
 
 import android.content.Context;
 
@@ -17,7 +17,8 @@ public class LeaderboardUtils {
 
     /**
      * Saves the user's selected name
-     * @param data Data to write
+     *
+     * @param data    Data to write
      * @param context Android context
      */
     public static void writeToFile(String data, Context context) {
@@ -32,6 +33,7 @@ public class LeaderboardUtils {
 
     /**
      * Reads the user's name
+     *
      * @param context Android context
      * @return The user's name
      */

@@ -36,16 +36,8 @@ public class SongReference {
         return data;
     }
 
-    public void setData(String data) {
-        this.data = data;
-    }
-
     public String getAudio() {
         return audio;
-    }
-
-    public void setAudio(String audio) {
-        this.audio = audio;
     }
 
     @Override

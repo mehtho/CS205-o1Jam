@@ -13,8 +13,9 @@ import androidx.fragment.app.Fragment;
 import cs205.a3.R;
 import cs205.a3.databinding.EndScreenFragmentBinding;
 import cs205.a3.menus.MainActivity;
-import cs205.a3.menus.NotificationPublisher;
 import cs205.a3.song.SongServer;
+import cs205.a3.util.LeaderboardUtils;
+import cs205.a3.util.NotificationPublisher;
 
 /**
  * Class for the end screen fragment
@@ -25,14 +26,14 @@ public class EndScreenFragment extends Fragment {
 
     /**
      * Displays the score achieved after the previous game
-     * @param inflater The LayoutInflater object that can be used to inflate
-     * any views in the fragment,
-     * @param container If non-null, this is the parent view that the fragment's
-     * UI should be attached to.  The fragment should not add the view itself,
-     * but this can be used to generate the LayoutParams of the view.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
-     * from a previous saved state as given here.
      *
+     * @param inflater           The LayoutInflater object that can be used to inflate
+     *                           any views in the fragment,
+     * @param container          If non-null, this is the parent view that the fragment's
+     *                           UI should be attached to.  The fragment should not add the view itself,
+     *                           but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     *                           from a previous saved state as given here.
      * @return
      */
     @Override
@@ -52,9 +53,9 @@ public class EndScreenFragment extends Fragment {
      * Submits the score to the server after going back to the menu. Will send a notification if
      * the score is a high score on the leaderboard
      *
-     * @param view The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
+     * @param view               The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
      * @param savedInstanceState If non-null, this fragment is being re-constructed
-     * from a previous saved state as given here.
+     *                           from a previous saved state as given here.
      */
     @SuppressLint("DefaultLocale")
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {

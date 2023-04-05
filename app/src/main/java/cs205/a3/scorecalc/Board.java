@@ -35,6 +35,7 @@ public class Board {
     /**
      * Updates the position of notes and removes them if they have expired (Moved through
      * the screen)
+     *
      * @return If a miss has been triggered by an expired note
      */
     public boolean tick() {
@@ -57,6 +58,7 @@ public class Board {
 
     /**
      * Responds a tap on a given lane
+     *
      * @param laneNo Lane number that was tapped
      * @return The score as a result of tapping the given lane
      */

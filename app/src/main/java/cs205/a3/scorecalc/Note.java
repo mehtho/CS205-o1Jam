@@ -2,7 +2,7 @@ package cs205.a3.scorecalc;
 
 /**
  * Object to store information of a note on the board.
- *
+ * <p>
  * This note is currently displayed on the board, and therefore contains information such as its
  * age, which relates to its position on the board.
  */

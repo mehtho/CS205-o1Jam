@@ -1,4 +1,4 @@
-package cs205.a3.song;
+package cs205.a3.timers;
 
 /**
  * A timer used to calculate the milliseconds since the song started

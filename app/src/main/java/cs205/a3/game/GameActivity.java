@@ -20,6 +20,7 @@ public class GameActivity extends Activity {
     /**
      * Displays a loading screen while loading song elements and downloading
      * the song if necessary
+     *
      * @param savedInstanceState
      */
     @SuppressLint("ClickableViewAccessibility")
@@ -56,7 +57,7 @@ public class GameActivity extends Activity {
      * Setup procedure for the game activity.
      * This includes initialising UI elements, particularly the key to press by assigning them
      * actions to perform upon input.
-     *
+     * <p>
      * Given the time-sensitive nature of a rhythm game, inputs are taken once keys are touched,
      * instead of when touched then released.
      */

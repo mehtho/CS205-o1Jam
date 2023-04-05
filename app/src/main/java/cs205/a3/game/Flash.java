@@ -4,9 +4,9 @@ package cs205.a3.game;
  * Object for animations that play when a button is pressed in the game
  */
 public class Flash {
-    private int age;
     private final int type;
     private final int lane;
+    private int age;
 
     public Flash(int type, int lane) {
         this.type = type;

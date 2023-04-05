@@ -1,4 +1,4 @@
-package cs205.a3.menus;
+package cs205.a3.util;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -11,6 +11,7 @@ import android.graphics.Color;
 import androidx.core.app.NotificationCompat;
 
 import cs205.a3.R;
+import cs205.a3.menus.MainActivity;
 
 /**
  * A class for displaying system notifications.

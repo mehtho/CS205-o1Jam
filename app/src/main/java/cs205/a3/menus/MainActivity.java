@@ -20,7 +20,7 @@ public class MainActivity extends FragmentActivity {
 
     /**
      * Starts the main activity, which initialises the application.
-     *
+     * <p>
      * Initialises the song list.
      *
      * @param savedInstanceState
@@ -43,13 +43,13 @@ public class MainActivity extends FragmentActivity {
      * Plays a loading screen while songs load
      */
     private void startSongListDisplay() {
-        new Thread(()->{
+        new Thread(() -> {
             int dots = 1;
-            while(!queriedSongs.isDone()) {
-                    TextView textView = findViewById(R.id.loading_text);
-                    textView.setText("Loading" + String.join("",
-                            Collections.nCopies(dots, ".")));
-                    dots = ++dots%4;
+            while (!queriedSongs.isDone()) {
+                TextView textView = findViewById(R.id.loading_text);
+                textView.setText("Loading" + String.join("",
+                        Collections.nCopies(dots, ".")));
+                dots = ++dots % 4;
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
@@ -57,7 +57,7 @@ public class MainActivity extends FragmentActivity {
                 }
             }
 
-            runOnUiThread(()->{
+            runOnUiThread(() -> {
                 FragmentManager manager = getSupportFragmentManager();
                 FragmentTransaction transaction = manager.beginTransaction();
                 transaction.replace(R.id.song_list_placeholder, new SongListFragment());

@@ -13,8 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import cs205.a3.databinding.ScoreFragmentItemBinding;
-import cs205.a3.game.LeaderboardUtils;
 import cs205.a3.scorecalc.Score;
+import cs205.a3.util.LeaderboardUtils;
 
 /**
  * Displays a list view for a list of scores on the leaderboard

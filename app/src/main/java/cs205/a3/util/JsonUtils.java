@@ -1,4 +1,4 @@
-package cs205.a3.song;
+package cs205.a3.util;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cs205.a3.scorecalc.Score;
+import cs205.a3.song.SongReference;
 
 /**
  * Utilities to handle API responses
@@ -19,6 +20,7 @@ public class JsonUtils {
 
     /**
      * Converts an API response into a list of song references
+     *
      * @param json Input JSON to convert
      * @return
      */
@@ -44,6 +46,7 @@ public class JsonUtils {
 
     /**
      * Produces a score list for the leaderboard, given an JSON response
+     *
      * @param json JSON Response
      * @return List of scores
      */

@@ -1,4 +1,4 @@
-package cs205.a3.game;
+package cs205.a3.timers;
 
 /**
  * A class that keeps track of time deltas between calls to its progress() method.

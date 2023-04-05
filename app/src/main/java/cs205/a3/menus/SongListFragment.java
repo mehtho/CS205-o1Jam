@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -19,9 +18,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cs205.a3.R;
-import cs205.a3.game.LeaderboardUtils;
 import cs205.a3.song.SongReference;
 import cs205.a3.song.SongServer;
+import cs205.a3.util.LeaderboardUtils;
 
 /**
  * A fragment representing a list of Items.
@@ -42,11 +41,11 @@ public class SongListFragment extends Fragment {
 
     /**
      * Reads songs fetched from the server asynchronously and displays them
-     *
+     * <p>
      * Prompts for the user's name if necessary
      *
      * @param savedInstanceState If the fragment is being re-created from
-     * a previous saved state, this is the state.
+     *                           a previous saved state, this is the state.
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -65,14 +64,13 @@ public class SongListFragment extends Fragment {
     /**
      * Create the list view for the song list.
      *
-     * @param inflater The LayoutInflater object that can be used to inflate
-     * any views in the fragment,
-     * @param container If non-null, this is the parent view that the fragment's
-     * UI should be attached to.  The fragment should not add the view itself,
-     * but this can be used to generate the LayoutParams of the view.
+     * @param inflater           The LayoutInflater object that can be used to inflate
+     *                           any views in the fragment,
+     * @param container          If non-null, this is the parent view that the fragment's
+     *                           UI should be attached to.  The fragment should not add the view itself,
+     *                           but this can be used to generate the LayoutParams of the view.
      * @param savedInstanceState If non-null, this fragment is being re-constructed
-     * from a previous saved state as given here.
-     *
+     *                           from a previous saved state as given here.
      * @return
      */
     @Override
@@ -117,7 +115,7 @@ public class SongListFragment extends Fragment {
         });
 
         //Re-prompt if cancelled
-        builder.setOnCancelListener((onCancelListener)->{
+        builder.setOnCancelListener((onCancelListener) -> {
             if (LeaderboardUtils.readNameFile(getContext()) == null) {
                 namePopUp();
             }

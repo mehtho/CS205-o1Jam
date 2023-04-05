@@ -1,4 +1,4 @@
-package cs205.a3.game;
+package cs205.a3.timers;
 
 import java.util.function.LongPredicate;
 

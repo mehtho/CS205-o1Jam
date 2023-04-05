@@ -105,10 +105,10 @@ public class ScoreFragment extends Fragment {
      * Updates the scoreboard once data has been loaded
      */
     private void startUpdate() {
-        new Thread(()->{
+        new Thread(() -> {
             try {
                 List<Score> rec = scoreGetter.get();
-                if(!rec.isEmpty()) {
+                if (!rec.isEmpty()) {
                     scores.clear();
                     scores.addAll(rec);
                 }

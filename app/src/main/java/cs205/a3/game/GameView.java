@@ -14,7 +14,7 @@ import java.util.function.Consumer;
 
 /**
  * Game view that holds the canvas on which notes flow down.
- *
+ * <p>
  * Rendered below activity elements such as the keys to press
  */
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
@@ -26,7 +26,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     /**
      * Initialised the game object and keeps the screen on while the game activity is running
-     * @param context Android context
+     *
+     * @param context      Android context
      * @param attributeSet unused
      */
     @SuppressLint("ClickableViewAccessibility")
@@ -40,6 +41,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     /**
      * Controls the synchronous use of the canvas
+     *
      * @param onDraw Game drawing cycle
      * @return Whether access is granted to the canvas
      */
@@ -66,6 +68,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     /**
      * Actions to perform when created, such as initialising the game thread
+     *
      * @param surfaceHolder
      */
     @Override
@@ -80,10 +83,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     /**
      * Actions to perform when the game view is resized
+     *
      * @param surfaceHolder Surface holder
-     * @param i Format
-     * @param i1 Width
-     * @param i2 Height
+     * @param i             Format
+     * @param i1            Width
+     * @param i2            Height
      */
     @Override
     public void surfaceChanged(@NonNull SurfaceHolder surfaceHolder, int i, int i1, int i2) {
@@ -93,8 +97,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     /**
      * Actions to perform when the game view is destroyed, such as stopping the game thread and
      * setting it to null to facilitate garbage collection.
-     *
+     * <p>
      * Disables the keep screen on wakelock
+     *
      * @param surfaceHolder
      */
     @Override

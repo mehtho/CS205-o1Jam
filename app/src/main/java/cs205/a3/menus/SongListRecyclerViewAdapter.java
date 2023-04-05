@@ -86,6 +86,12 @@ public class SongListRecyclerViewAdapter
         return mValues.size();
     }
 
+    private Future<List<Score>> loadSongs(Context context, String songId) {
+        SongServer songServer = SongServer.getInstance(
+                context.getString(R.string.server));
+        return songServer.getScoresForSong(songId);
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final TextView mContentView;
         public final ImageButton mButton;
@@ -101,11 +107,5 @@ public class SongListRecyclerViewAdapter
         public String toString() {
             return super.toString() + " '" + mContentView.getText() + "'";
         }
-    }
-
-    private Future<List<Score>> loadSongs(Context context, String songId) {
-        SongServer songServer = SongServer.getInstance(
-                context.getString(R.string.server));
-        return songServer.getScoresForSong(songId);
     }
 }
