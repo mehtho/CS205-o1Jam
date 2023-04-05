@@ -46,30 +46,32 @@ public class Game {
     // Timers and counters
     private final ScoreHandler scoreHandler = new ScoreHandler();
     private final MillDeltaTimer noteTimer = new MillDeltaTimer();
+    private final MillDeltaTimer clockTimer = new MillDeltaTimer();
     private final Counter frameCounter = new Counter();
     private final ElapsedTimer elapsedTimer = new ElapsedTimer();
     private final DeltaStepper fpsUpdater = new DeltaStepper(intervalFps, this::fpsUpdate);
     private final DeltaStepper clockUpdater = new DeltaStepper(intervalFps, this::clockUpdate);
-    private final RectF spinningTimer = new RectF(1210F, 0F, 1410F, 200F);
 
     // Audio
     private final MediaPlayer songPlayer = new MediaPlayer();
 
-    // Paint objects for colors, text and shapes
+    // Paint objects for UI elements, colors, text and shapes
     private final Paint fpsText = new Paint();
     private final Paint comboText = new Paint();
     private final Paint scoreText = new Paint();
     private final Paint noteColorOdd = new Paint();
     private final Paint noteColorEven = new Paint();
+    private final RectF spinningTimer = new RectF(1210F, 0F, 1410F, 200F);
 
-    // Board data, for notes
+    // Board data, which displays the current position of notes that flow down the screen
     private final Board board = new Board();
+    // Queued notes that will start following in sync with the music
     private final Queue<QueuedNote> noteQueue = new LinkedList<>();
+    // Boolean to determine whether the game is in progress
     private final AtomicBoolean isRunning = new AtomicBoolean(false);
-    private final MillDeltaTimer clockTimer = new MillDeltaTimer();
-    private double avgFps = 0.0;
 
     // Variables
+    private double avgFps = 0.0;
     private int canvasHeight;
     private int canvasWidth;
     private String songPath;
@@ -342,10 +344,18 @@ public class Game {
     public void tapLane(int lane) {
         int point = board.tapLane(lane);
 
+        /**
+         * Plays the "Flash" animation in the respective lane
+         */
         synchronized (flashMutex) {
             flashes[lane] = new Flash(point, lane);
         }
 
+        /**
+         * Enqueues the score in the score handler
+         * This forms the "Producer" side of the
+         * producer-consumer pattern
+         */
         if (point != -2) {
             scoreHandler.enqueueScore(point);
         }
@@ -414,6 +424,7 @@ public class Game {
         isRunning.set(false);
         songPlayer.stop();
         transition.interrupt();
+        scoreHandler.deactivate();
     }
 
     /**

@@ -38,6 +38,14 @@ public class SongListFragment extends Fragment {
     public SongListFragment() {
     }
 
+    /**
+     * Reads songs fetched from the server asynchronously and displays them
+     *
+     * Prompts for the user's name if necessary
+     *
+     * @param savedInstanceState If the fragment is being re-created from
+     * a previous saved state, this is the state.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,8 +55,7 @@ public class SongListFragment extends Fragment {
         }
 
         songReferenceList = SongServer.getInstance(getString(R.string.server)).getSongs();
-        System.out.println(songReferenceList);
-        if (LeaderboardUtils.readNameFile(getContext()) == null) {
+        while (LeaderboardUtils.readNameFile(getContext()) == null) {
             namePopUp();
         }
     }
@@ -69,6 +76,7 @@ public class SongListFragment extends Fragment {
             }
 
             while (songReferenceList == null || songReferenceList.isEmpty()) {
+                // Cycle the loading screen
                 System.out.println("Nothing yet");
             }
 
@@ -90,7 +98,7 @@ public class SongListFragment extends Fragment {
 
         builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
             dialog.dismiss();
-            System.out.println(input.getText().toString());
+
             new Thread(() -> LeaderboardUtils.writeToFile(input.getText().toString(),
                     getContext())).start();
         });

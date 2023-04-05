@@ -1,5 +1,8 @@
 package cs205.a3.song;
 
+/**
+ * A timer used to calculate the milliseconds since the song started
+ */
 public class MillDeltaTimer {
     private long startTime;
 

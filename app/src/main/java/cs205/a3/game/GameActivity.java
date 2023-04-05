@@ -11,9 +11,17 @@ import cs205.a3.R;
 import cs205.a3.databinding.GameFullscreenBinding;
 import cs205.a3.song.SongServer;
 
+/**
+ * Activity that holds the game
+ */
 public class GameActivity extends Activity {
     private GameFullscreenBinding binding;
 
+    /**
+     * Displays a loading screen while loading song elements and downloading
+     * the song if necessary
+     * @param savedInstanceState
+     */
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +31,9 @@ public class GameActivity extends Activity {
         loadFromServer();
     }
 
+    /**
+     * Loads the song from file if present, or fetches it from the server if necessary
+     */
     public void loadFromServer() {
         String songId = getIntent().getStringExtra("songId");
         Thread downloader = new Thread(() -> {
@@ -41,6 +52,14 @@ public class GameActivity extends Activity {
         downloader.start();
     }
 
+    /**
+     * Setup procedure for the game activity.
+     * This includes initialising UI elements, particularly the key to press by assigning them
+     * actions to perform upon input.
+     *
+     * Given the time-sensitive nature of a rhythm game, inputs are taken once keys are touched,
+     * instead of when touched then released.
+     */
     @SuppressLint("ClickableViewAccessibility")
     public void doSetup() {
         binding = GameFullscreenBinding.inflate(getLayoutInflater());
@@ -86,6 +105,9 @@ public class GameActivity extends Activity {
         runOnUiThread(() -> setContentView(binding.getRoot()));
     }
 
+    /**
+     * Stops the game when the activity is destroyed.
+     */
     @Override
     public void onDestroy() {
         super.onDestroy();

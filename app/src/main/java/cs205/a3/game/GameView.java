@@ -12,6 +12,11 @@ import androidx.annotation.NonNull;
 
 import java.util.function.Consumer;
 
+/**
+ * Game view that holds the canvas on which notes flow down.
+ *
+ * Rendered below activity elements such as the keys to press
+ */
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public static Game game;
 
@@ -19,6 +24,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private GameThread gameThread;
 
+    /**
+     * Initialised the game object and keeps the screen on while the game activity is running
+     * @param context Android context
+     * @param attributeSet unused
+     */
     @SuppressLint("ClickableViewAccessibility")
     public GameView(Context context, AttributeSet attributeSet) {
         super(context);
@@ -28,6 +38,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         setKeepScreenOn(true);
     }
 
+    /**
+     * Controls the synchronous use of the canvas
+     * @param onDraw Game drawing cycle
+     * @return Whether access is granted to the canvas
+     */
     private boolean useCanvas(final Consumer<Canvas> onDraw) {
         boolean result = false;
         try {
@@ -49,6 +64,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         return result;
     }
 
+    /**
+     * Actions to perform when created, such as initialising the game thread
+     * @param surfaceHolder
+     */
     @Override
     public void surfaceCreated(@NonNull SurfaceHolder surfaceHolder) {
         if ((gameThread == null) || (gameThread.getState() == Thread.State.TERMINATED)) {
@@ -59,20 +78,29 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         gameThread.startLoop();
     }
 
+    /**
+     * Actions to perform when the game view is resized
+     * @param surfaceHolder Surface holder
+     * @param i Format
+     * @param i1 Width
+     * @param i2 Height
+     */
     @Override
     public void surfaceChanged(@NonNull SurfaceHolder surfaceHolder, int i, int i1, int i2) {
         gameInstance.resize(i1, i2);
     }
 
+    /**
+     * Actions to perform when the game view is destroyed, such as stopping the game thread and
+     * setting it to null to facilitate garbage collection.
+     *
+     * Disables the keep screen on wakelock
+     * @param surfaceHolder
+     */
     @Override
     public void surfaceDestroyed(@NonNull SurfaceHolder surfaceHolder) {
         gameThread.stopLoop();
         gameThread = null;
-    }
-
-    @Override
-    public void draw(final Canvas canvas) {
-        super.draw(canvas);
-//        game.draw();
+        setKeepScreenOn(false);
     }
 }

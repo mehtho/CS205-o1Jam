@@ -3,6 +3,10 @@ package cs205.a3.scorecalc;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+/**
+ * A thread to handle button presses and adjust score and combo counter
+ * Is the "Consumer" in the producer-consumer pattern
+ */
 public class ScoreHandler implements Runnable {
     private final BlockingQueue<Long> blockingQueue;
     private volatile long score;
@@ -24,6 +28,10 @@ public class ScoreHandler implements Runnable {
                     if (inp == -1) {
                         combo = 0;
                     } else {
+                        /**
+                         * Scoring algorithm in relation to combo inspired by popular
+                         * rhythm game osu!
+                         */
                         final long toAdd = (long) (inp * ((1.0 + (combo++ / 25.0))));
                         score += toAdd;
                     }
@@ -46,11 +54,7 @@ public class ScoreHandler implements Runnable {
         return combo;
     }
 
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
+    public void deactivate() {
+        this.isActive = false;
     }
 }

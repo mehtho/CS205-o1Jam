@@ -1,5 +1,8 @@
 package cs205.a3.game;
 
+/**
+ * Thread that manages rate at which the game updates itself according to the target framerate
+ */
 public class GameThread extends Thread {
 
     private final Game game;

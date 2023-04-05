@@ -1,5 +1,8 @@
 package cs205.a3.game;
 
+/**
+ * Object for animations that play when a button is pressed in the game
+ */
 public class Flash {
     private int age;
     private final int type;
@@ -20,9 +23,5 @@ public class Flash {
 
     public int getType() {
         return type;
-    }
-
-    public int getLane() {
-        return lane;
     }
 }

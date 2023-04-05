@@ -10,7 +10,13 @@ import cs205.a3.R;
 import cs205.a3.song.SongServer;
 
 public class MainActivity extends FragmentActivity {
-
+    /**
+     * Starts the main activity, which initialises the application.
+     *
+     * Initialises the song list.
+     *
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
