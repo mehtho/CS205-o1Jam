@@ -52,6 +52,8 @@ public class Game {
     private final MillDeltaTimer clockTimer = new MillDeltaTimer();
     private final Counter frameCounter = new Counter();
     private final ElapsedTimer elapsedTimer = new ElapsedTimer();
+    private final DeltaStepper fpsUpdater = new DeltaStepper(intervalFps, this::fpsUpdate);
+    private final DeltaStepper clockUpdater = new DeltaStepper(intervalFps, this::clockUpdate);
     // Audio
     private final MediaPlayer songPlayer = new MediaPlayer();
     // Paint objects for UI elements, colors, text and shapes
@@ -70,7 +72,6 @@ public class Game {
     private Context context;
     // Variables
     private double avgFps = 0.0;
-    private final DeltaStepper fpsUpdater = new DeltaStepper(intervalFps, this::fpsUpdate);
     private int canvasHeight;
     private int canvasWidth;
     private String songPath;
@@ -97,7 +98,6 @@ public class Game {
     private boolean isEnding = false;
     private int maxTime = 1;
     private String timerText = "00:00";
-    private final DeltaStepper clockUpdater = new DeltaStepper(intervalFps, this::clockUpdate);
 
     /**
      * Constructor to initialise canvas paints
@@ -222,14 +222,16 @@ public class Game {
             board.addNote(noteQueue.remove().getLane());
         }
 
-        for (int lane = 0; lane < 4; lane++) {
-            for (Note note : board.getBoard().get(lane)) {
-                int l = lane * (canvasWidth / 4);
-                int t = note.getAge() * (canvasHeight / 50);
-                if (lane == 1 || lane == 2) {
-                    canvas.drawRect(l, t, l + (canvasWidth / 4), t + 80, noteColorOdd);
-                } else {
-                    canvas.drawRect(l, t, l + (canvasWidth / 4), t + 80, noteColorEven);
+        synchronized (board.getMutex()) {
+            for (int lane = 0; lane < 4; lane++) {
+                for (Note note : board.getBoard().get(lane)) {
+                    int l = lane * (canvasWidth / 4);
+                    int t = note.getAge() * (canvasHeight / 50);
+                    if (lane == 1 || lane == 2) {
+                        canvas.drawRect(l, t, l + (canvasWidth / 4), t + 80, noteColorOdd);
+                    } else {
+                        canvas.drawRect(l, t, l + (canvasWidth / 4), t + 80, noteColorEven);
+                    }
                 }
             }
         }

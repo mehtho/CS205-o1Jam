@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Object storing information on the game's board
@@ -75,5 +77,9 @@ public class Board {
 
     public String toString() {
         return board.get(0).toString() + board.get(1).toString() + board.get(2).toString() + board.get(3).toString();
+    }
+
+    public Object getMutex() {
+        return mutex;
     }
 }
