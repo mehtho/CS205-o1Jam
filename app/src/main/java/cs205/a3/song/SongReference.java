@@ -1,5 +1,8 @@
 package cs205.a3.song;
 
+/**
+ * Object for a Song reference
+ */
 public class SongReference {
     private String name;
     private String id;

@@ -1,5 +1,9 @@
 package cs205.a3.scorecalc;
 
+/**
+ * Object to store information related to score, such as its ID, the score, the associated
+ * username and the associated song ID.
+ */
 public class Score {
     private String id;
     private long score;

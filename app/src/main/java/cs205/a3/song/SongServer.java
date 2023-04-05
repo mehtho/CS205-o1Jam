@@ -23,13 +23,18 @@ import java.util.concurrent.Future;
 import cs205.a3.menus.NetworkThreadPool;
 import cs205.a3.scorecalc.Score;
 
+/**
+ * Class to handle communications between the application and the server
+ */
 public class SongServer {
     private static SongServer songServer;
     private final Object songMutex = new Object();
     private final String server;
 
+    // List of song references to display
     private final List<SongReference> songs;
 
+    // Thread pool for network requests
     private final NetworkThreadPool networkThreadPool = new NetworkThreadPool();
 
     private SongServer(String server) {
@@ -51,6 +56,10 @@ public class SongServer {
         }
     }
 
+    /**
+     * Queries songs from the server
+     * @return Future object with a list of available songs
+     */
     public Future<List<SongReference>> querySongs() {
         return networkThreadPool.submitSongCall(() -> {
             ArrayList<SongReference> newSongs = new ArrayList<>();
@@ -78,6 +87,13 @@ public class SongServer {
         });
     }
 
+    /**
+     * Submits a score to the server
+     * @param songId ID of the song for the score
+     * @param username User's username
+     * @param score User's score
+     * @return Leaderboard position
+     */
     public int submitScore(String songId, String username, long score) {
         try {
             List<Score> scores = getScoresForSongAndUser(songId, username).get();
@@ -98,7 +114,16 @@ public class SongServer {
         }
     }
 
-    private int topTenCheck(String songId, String username) throws InterruptedException, ExecutionException {
+    /**
+     * Checks if the user's score is in the top 10
+     * @param songId ID of the song to check
+     * @param username Username to check for
+     * @return Leaderboard position if any
+     * @throws InterruptedException
+     * @throws ExecutionException
+     */
+    private int topTenCheck(String songId, String username)
+            throws InterruptedException, ExecutionException {
         List<Score> topTen = getScoresForSong(songId).get();
         for (int i = 0; i < topTen.size(); i++) {
             if (topTen.get(i).getName().equals(username)) {
@@ -108,6 +133,10 @@ public class SongServer {
         return 0;
     }
 
+    /**
+     * Updates a score if it is higher
+     * @param score Score object to update to
+     */
     private void updateScoreSubmission(Score score) {
         new Thread(() -> {
             try {
@@ -122,6 +151,12 @@ public class SongServer {
         }).start();
     }
 
+    /**
+     * Submit a new score
+     * @param songId Song ID to submit for
+     * @param username User's username
+     * @param score Score to submit
+     */
     private void sendScoreSubmission(String songId, String username, long score) {
         new Thread(() -> {
             try {
@@ -138,6 +173,13 @@ public class SongServer {
         }).start();
     }
 
+    /**
+     * Sends a request to the requested URL
+     * @param url Requested URL
+     * @param method HTTP Method
+     * @param jsonObject JSON body
+     * @throws IOException
+     */
     private void sendRequest(URL url, String method, JSONObject jsonObject) throws IOException {
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod(method);
@@ -156,12 +198,22 @@ public class SongServer {
         conn.disconnect();
     }
 
+    /**
+     * Download the song's audio and game file
+     * @param id ID of the song's data to download
+     * @param data Song data file name
+     * @param audio Song audio file name
+     * @param server Servel URL
+     * @param dst File to write to
+     */
     public void downloadSong(String id, String data, String audio, String server, File dst) {
         try {
             File directory = new File(dst.getAbsolutePath() + "/songData");
             if (!directory.exists()) {
                 directory.mkdirs();
             }
+
+            //Song data downloading thread
             Thread dataDownload = new Thread(() -> {
                 boolean success = false;
                 while(!success) {
@@ -179,6 +231,7 @@ public class SongServer {
                 }
             });
 
+            //Song audio downloading thread
             Thread audioDownload = new Thread(() -> {
                 boolean success = false;
                 while (!success) {
@@ -205,36 +258,54 @@ public class SongServer {
         }
     }
 
+    /**
+     * Gets the submitted scores for a given song
+     * @param songId Song ID to get scores for
+     * @return Song scores
+     */
     public Future<List<Score>> getScoresForSong(String songId) {
         return networkThreadPool.submitScoreCall(() -> {
-            try {
-                URL oracle = new URL(server
-                        + String.format("/api/collections/scores/records?filter=(song='%s')&sort=-score&perPage=10", songId));
-                BufferedReader in = new BufferedReader(
-                        new InputStreamReader(oracle.openStream()));
+            boolean success = false;
+            while (!success) {
+                try {
+                    URL oracle = new URL(server
+                            + String.format("/api/collections/scores/records?filter=(song='%s')&sort=-score&perPage=10", songId));
+                    BufferedReader in = new BufferedReader(
+                            new InputStreamReader(oracle.openStream()));
 
-                List<Score> scores = new ArrayList<>();
-                String inputLine;
-                while ((inputLine = in.readLine()) != null) {
-                    scores.addAll(JsonUtils.getScoreList(inputLine));
+                    List<Score> scores = new ArrayList<>();
+                    String inputLine;
+                    while ((inputLine = in.readLine()) != null) {
+                        scores.addAll(JsonUtils.getScoreList(inputLine));
+                    }
+
+                    in.close();
+                    success = true;
+
+                    return scores;
+                } catch (IOException e) {
+                    //Do nothing
                 }
-
-                in.close();
-
-                return scores;
-            } catch (IOException e) {
-                System.out.println(e);
-                e.printStackTrace();
             }
             return new ArrayList<>();
         });
     }
 
+    /**
+     * Gets scores for a user on a song
+     * @param songId Song ID to get scores for
+     * @param username Username to get scores for
+     * @return
+     */
     private Future<List<Score>> getScoresForSongAndUser(String songId, String username) {
         return networkThreadPool.submitScoreCall(() -> {
             try {
                 URL url = new URL(server + "/api/collections/scores/records?filter="
-                        + URLEncoder.encode(String.format("(song=\"%s\"&&name=\"%s\")", songId, username), StandardCharsets.UTF_8.toString()));
+                        + URLEncoder.encode(String.format(
+                                "(song=\"%s\"&&name=\"%s\")",
+                        songId, username),
+                        StandardCharsets.UTF_8.toString()));
+
                 BufferedReader in = new BufferedReader(
                         new InputStreamReader(url.openStream()));
 

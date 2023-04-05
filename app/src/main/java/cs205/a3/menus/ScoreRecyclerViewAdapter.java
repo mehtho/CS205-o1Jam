@@ -16,6 +16,9 @@ import cs205.a3.databinding.ScoreFragmentItemBinding;
 import cs205.a3.game.LeaderboardUtils;
 import cs205.a3.scorecalc.Score;
 
+/**
+ * Displays a list view for a list of scores on the leaderboard
+ */
 public class ScoreRecyclerViewAdapter extends RecyclerView.Adapter<ScoreRecyclerViewAdapter.ViewHolder> {
 
     private final List<Score> mValues;
@@ -37,6 +40,7 @@ public class ScoreRecyclerViewAdapter extends RecyclerView.Adapter<ScoreRecycler
         holder.mIdView.setText("" + mValues.get(position).getScore());
         holder.mContentView.setText(mValues.get(position).getName());
 
+        //Sets the action to send an email if the user owns the high score
         String me = LeaderboardUtils.readNameFile(holder.mButton.getContext());
         if (me.equals(mValues.get(position).getName())) {
             holder.mButton.setOnClickListener(x -> {
@@ -44,11 +48,14 @@ public class ScoreRecyclerViewAdapter extends RecyclerView.Adapter<ScoreRecycler
                 i.setType("message/rfc822");
                 i.putExtra(Intent.EXTRA_EMAIL, new String[]{"recipient@example.com"});
                 i.putExtra(Intent.EXTRA_SUBJECT, "o1Jam high score");
-                i.putExtra(Intent.EXTRA_TEXT, String.format("I scored %d on %s! Beat that!", mValues.get(position).getScore(), this.songName));
+                i.putExtra(Intent.EXTRA_TEXT, String.format("I scored %d on %s! Beat that!",
+                        mValues.get(position).getScore(), this.songName));
+
                 try {
                     x.getContext().startActivity(Intent.createChooser(i, "Send mail..."));
                 } catch (android.content.ActivityNotFoundException ex) {
-                    Toast.makeText(x.getContext(), "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(x.getContext(), "There are no email clients installed.",
+                            Toast.LENGTH_SHORT).show();
                 }
             });
         } else {

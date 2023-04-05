@@ -62,6 +62,19 @@ public class SongListFragment extends Fragment {
         }
     }
 
+    /**
+     * Create the list view for the song list.
+     *
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -77,16 +90,14 @@ public class SongListFragment extends Fragment {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
 
-            while (songReferenceList == null || songReferenceList.isEmpty()) {
-                // Cycle the loading screen
-                System.out.println("Nothing yet");
-            }
-
             recyclerView.setAdapter(new SongListRecyclerViewAdapter(songReferenceList));
         }
         return view;
     }
 
+    /**
+     * Launches a name popup to prompt the user for their name if necessary
+     */
     public void namePopUp() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Enter your name!");
@@ -97,7 +108,7 @@ public class SongListFragment extends Fragment {
 
         builder.setView(viewInflated);
 
-
+        //Write the username if given
         builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
             dialog.dismiss();
 
@@ -105,6 +116,7 @@ public class SongListFragment extends Fragment {
                     getContext())).start();
         });
 
+        //Re-prompt if cancelled
         builder.setOnCancelListener((onCancelListener)->{
             if (LeaderboardUtils.readNameFile(getContext()) == null) {
                 namePopUp();

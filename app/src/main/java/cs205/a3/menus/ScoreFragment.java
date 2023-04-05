@@ -16,10 +16,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.function.Supplier;
 
 import cs205.a3.R;
 import cs205.a3.scorecalc.Score;
-import cs205.a3.song.SongServer;
 
 /**
  * A fragment representing a list of Items.
@@ -28,11 +28,24 @@ public class ScoreFragment extends Fragment {
     private static final String ARG_COLUMN_COUNT = "column-count";
     private int mColumnCount = 1;
 
+    private Future<List<Score>> scoreGetter;
+
+    private List<Score> scores;
+
+    private ScoreRecyclerViewAdapter adapter;
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
     public ScoreFragment() {
+        scores = new ArrayList<>();
+        scores.add(new Score("0", 0, "No scores yet!", "0"));
+    }
+
+    public ScoreFragment(Supplier<Future<List<Score>>> scoreGetter) {
+        this();
+        this.scoreGetter = scoreGetter.get();
     }
 
     @SuppressWarnings("unused")
@@ -70,8 +83,11 @@ public class ScoreFragment extends Fragment {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
 
-            recyclerView.setAdapter(new ScoreRecyclerViewAdapter(loadScores(),
-                    this.getArguments().getString("songName")));
+            adapter = new ScoreRecyclerViewAdapter(scores,
+                    this.getArguments().getString("songName"));
+            startUpdate();
+
+            recyclerView.setAdapter(adapter);
         }
         return view;
     }
@@ -79,24 +95,24 @@ public class ScoreFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        getView().findViewById(R.id.loading).setVisibility(View.GONE);
     }
 
-    public List<Score> loadScores() {
-        SongServer songServer = SongServer.getInstance(getString(R.string.server));
-        Future<List<Score>> scoreFuture
-                = songServer.getScoresForSong(this.getArguments().getString("songId"));
-        try {
-            List<Score> scores = scoreFuture.get();
-            if (!scores.isEmpty()) {
-                return scores;
-            }
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
+    private void startUpdate() {
+        new Thread(()->{
+            try {
+                List<Score> rec = scoreGetter.get();
+                if(!rec.isEmpty()) {
+                    scores.clear();
+                    scores.addAll(rec);
+                }
 
-        ArrayList<Score> err = new ArrayList<>();
-        err.add(new Score("", 0, "No Scores Yet!", "Id"));
-        return err;
+                getActivity().runOnUiThread(() -> {
+                    adapter.notifyDataSetChanged();
+                    getView().findViewById(R.id.loading).setVisibility(View.GONE);
+                });
+            } catch (ExecutionException | InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }).start();
     }
 }

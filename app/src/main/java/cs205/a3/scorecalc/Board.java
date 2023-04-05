@@ -6,6 +6,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ * Object storing information on the game's board
+ */
 public class Board {
     private final Object mutex = new Object();
     private final List<LinkedList<Note>> board;
@@ -29,6 +32,11 @@ public class Board {
         }
     }
 
+    /**
+     * Updates the position of notes and removes them if they have expired (Moved through
+     * the screen)
+     * @return If a miss has been triggered by an expired note
+     */
     public boolean tick() {
         AtomicBoolean triggerMiss = new AtomicBoolean(false);
         synchronized (mutex) {
@@ -47,6 +55,11 @@ public class Board {
         }
     }
 
+    /**
+     * Responds a tap on a given lane
+     * @param laneNo Lane number that was tapped
+     * @return The score as a result of tapping the given lane
+     */
     public int tapLane(int laneNo) {
         synchronized (mutex) {
             LinkedList<Note> lane = board.get(laneNo);

@@ -1,5 +1,6 @@
 package cs205.a3.menus;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,16 +13,17 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
+import java.util.concurrent.Future;
 
 import cs205.a3.R;
 import cs205.a3.databinding.SongItemBinding;
 import cs205.a3.game.GameActivity;
-import cs205.a3.placeholder.PlaceholderContent.PlaceholderItem;
+import cs205.a3.scorecalc.Score;
 import cs205.a3.song.SongReference;
+import cs205.a3.song.SongServer;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link PlaceholderItem}.
- * TODO: Replace the implementation with code for your data type.
+ * Displays the list of songs in the song menu
  */
 public class SongListRecyclerViewAdapter
         extends RecyclerView.Adapter<SongListRecyclerViewAdapter.ViewHolder> {
@@ -44,6 +46,8 @@ public class SongListRecyclerViewAdapter
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
         holder.mContentView.setText(mValues.get(position).getName());
+
+        //Set each button to start the song
         holder.itemView.setOnClickListener(x -> {
             Intent intent = new Intent(holder.itemView.getContext(), GameActivity.class);
             intent.putExtra("songName", mValues.get(position).getName());
@@ -52,11 +56,16 @@ public class SongListRecyclerViewAdapter
             intent.putExtra("songAudio", mValues.get(position).getAudio());
             holder.itemView.getContext().startActivity(intent);
         });
+
+        //Set each button to navigate to the leaderboard
         holder.mButton.setOnClickListener(x -> {
             Bundle bundle = new Bundle();
             bundle.putString("songId", mValues.get(position).getId());
             bundle.putString("songName", mValues.get(position).getName());
-            ScoreFragment fragInfo = new ScoreFragment();
+            ScoreFragment fragInfo = new ScoreFragment(() ->
+                    loadSongs(holder.mContentView.getContext(),
+                            mValues.get(position).getId()));
+
             fragInfo.setArguments(bundle);
 
             FragmentActivity activity = (FragmentActivity) holder.itemView.getContext();
@@ -92,5 +101,11 @@ public class SongListRecyclerViewAdapter
         public String toString() {
             return super.toString() + " '" + mContentView.getText() + "'";
         }
+    }
+
+    private Future<List<Score>> loadSongs(Context context, String songId) {
+        SongServer songServer = SongServer.getInstance(
+                context.getString(R.string.server));
+        return songServer.getScoresForSong(songId);
     }
 }
