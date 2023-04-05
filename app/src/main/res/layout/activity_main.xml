@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".menus.MainActivity">
-
+    <include layout="@layout/loading"/>
     <FrameLayout
         android:id="@+id/song_list_placeholder"
         android:layout_width="match_parent"

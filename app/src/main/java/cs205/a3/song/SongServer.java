@@ -51,36 +51,29 @@ public class SongServer {
         }
     }
 
-    public void startQuerySongs() {
-        try {
-            List<SongReference> newSongs = querySongs().get();
+    public Future<List<SongReference>> querySongs() {
+        return networkThreadPool.submitSongCall(() -> {
+            ArrayList<SongReference> newSongs = new ArrayList<>();
+            while(newSongs.isEmpty()) {
+                try {
+                    URL oracle = new URL(server + "/api/collections/songs/records");
+                    BufferedReader in = new BufferedReader(
+                            new InputStreamReader(oracle.openStream()));
+
+                    String inputLine;
+                    while ((inputLine = in.readLine()) != null) {
+                        newSongs.addAll(JsonUtils.getSongReferences(inputLine));
+                    }
+                    in.close();
+                } catch (IOException e) {
+
+                }
+            }
             synchronized (songMutex) {
                 songs.clear();
                 songs.addAll(newSongs);
             }
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-    }
 
-    private Future<List<SongReference>> querySongs() {
-        return networkThreadPool.submitSongCall(() -> {
-            ArrayList<SongReference> newSongs = new ArrayList<>();
-            try {
-                URL oracle = new URL(server + "/api/collections/songs/records");
-                BufferedReader in = new BufferedReader(
-                        new InputStreamReader(oracle.openStream()));
-
-                String inputLine;
-                while ((inputLine = in.readLine()) != null) {
-                    newSongs.addAll(JsonUtils.getSongReferences(inputLine));
-                }
-                in.close();
-                return newSongs;
-            } catch (IOException e) {
-                System.out.println(e);
-                e.printStackTrace();
-            }
             return newSongs;
         });
     }
@@ -170,28 +163,36 @@ public class SongServer {
                 directory.mkdirs();
             }
             Thread dataDownload = new Thread(() -> {
-                try {
-                    String url = server + "/api/files/songs/" + id + "/" + data;
-                    ReadableByteChannel readableByteChannel = Channels.newChannel(new URL(url).openStream());
+                boolean success = false;
+                while(!success) {
+                    try {
+                        String url = server + "/api/files/songs/" + id + "/" + data;
+                        ReadableByteChannel readableByteChannel = Channels.newChannel(new URL(url).openStream());
 
-                    FileOutputStream fileOutputStream = new FileOutputStream(dst.getAbsolutePath() + "/songData/" + id + ".osu");
-                    fileOutputStream.getChannel()
-                            .transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
-                } catch (IOException e) {
-                    e.printStackTrace();
+                        FileOutputStream fileOutputStream = new FileOutputStream(dst.getAbsolutePath() + "/songData/" + id + ".osu");
+                        fileOutputStream.getChannel()
+                                .transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
+                        success = true;
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             });
 
             Thread audioDownload = new Thread(() -> {
-                try {
-                    String url = server + "/api/files/songs/" + id + "/" + audio;
-                    ReadableByteChannel readableByteChannel = Channels.newChannel(new URL(url).openStream());
+                boolean success = false;
+                while (!success) {
+                    try {
+                        String url = server + "/api/files/songs/" + id + "/" + audio;
+                        ReadableByteChannel readableByteChannel = Channels.newChannel(new URL(url).openStream());
 
-                    FileOutputStream fileOutputStream = new FileOutputStream(dst.getAbsolutePath() + "/songData/" + id + ".mp3");
-                    fileOutputStream.getChannel()
-                            .transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
-                } catch (IOException e) {
-                    e.printStackTrace();
+                        FileOutputStream fileOutputStream = new FileOutputStream(dst.getAbsolutePath() + "/songData/" + id + ".mp3");
+                        fileOutputStream.getChannel()
+                                .transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
+                        success = true;
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             });
 

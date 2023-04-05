@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.textfield.TextInputEditText;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,7 +57,7 @@ public class SongListFragment extends Fragment {
         }
 
         songReferenceList = SongServer.getInstance(getString(R.string.server)).getSongs();
-        while (LeaderboardUtils.readNameFile(getContext()) == null) {
+        if (LeaderboardUtils.readNameFile(getContext()) == null) {
             namePopUp();
         }
     }
@@ -91,7 +93,7 @@ public class SongListFragment extends Fragment {
 
         View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.name_input, (ViewGroup) getView(), false);
 
-        final EditText input = viewInflated.findViewById(R.id.input);
+        final TextInputEditText input = viewInflated.findViewById(R.id.input);
 
         builder.setView(viewInflated);
 
@@ -101,6 +103,12 @@ public class SongListFragment extends Fragment {
 
             new Thread(() -> LeaderboardUtils.writeToFile(input.getText().toString(),
                     getContext())).start();
+        });
+
+        builder.setOnCancelListener((onCancelListener)->{
+            if (LeaderboardUtils.readNameFile(getContext()) == null) {
+                namePopUp();
+            }
         });
 
         builder.show();
