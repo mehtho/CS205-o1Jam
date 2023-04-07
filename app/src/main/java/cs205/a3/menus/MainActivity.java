@@ -1,5 +1,6 @@
 package cs205.a3.menus;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.widget.TextView;
 
@@ -42,6 +43,7 @@ public class MainActivity extends FragmentActivity {
     /**
      * Plays a loading screen while songs load
      */
+    @SuppressLint("SetTextI18n")
     private void startSongListDisplay() {
         new Thread(() -> {
             int dots = 1;
@@ -60,6 +62,8 @@ public class MainActivity extends FragmentActivity {
             runOnUiThread(() -> {
                 FragmentManager manager = getSupportFragmentManager();
                 FragmentTransaction transaction = manager.beginTransaction();
+
+                //Removes loading screen here
                 transaction.replace(R.id.song_list_placeholder, new SongListFragment());
                 transaction.commit();
             });

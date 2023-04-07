@@ -89,9 +89,9 @@ public class ScoreFragment extends Fragment {
 
             adapter = new ScoreRecyclerViewAdapter(scores,
                     this.getArguments().getString("songName"));
-            startUpdate();
-
             recyclerView.setAdapter(adapter);
+
+            startUpdate();
         }
         return view;
     }

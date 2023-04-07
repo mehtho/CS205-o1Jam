@@ -1,5 +1,7 @@
 package cs205.a3.song;
 
+import android.content.Context;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -22,6 +24,7 @@ import java.util.concurrent.Future;
 
 import cs205.a3.scorecalc.Score;
 import cs205.a3.util.JsonUtils;
+import cs205.a3.util.NotificationPublisher;
 
 /**
  * Class to handle communications between the application and the server
@@ -96,24 +99,35 @@ public class SongServer {
      * @param score    User's score
      * @return Leaderboard position
      */
-    public int submitScore(String songId, String username, long score) {
-        try {
-            List<Score> scores = getScoresForSongAndUser(songId, username).get();
+    public void submitScore(String songId, String username, long score, Context context,
+                            String songName) {
+        networkThreadPool.submitTask(() ->{
+            int place = 0;
+            try {
+                List<Score> scores = getScoresForSongAndUser(songId, username).get();
+                boolean found = false;
 
-            for (Score sc : scores) {
-                if (sc.getScore() < score) {
-                    updateScoreSubmission(new Score(sc.getId(), score, username, songId));
-                    return topTenCheck(songId, username);
+                for (Score sc : scores) {
+                    if (sc.getScore() < score) {
+                        updateScoreSubmission(new Score(sc.getId(), score, username, songId));
+                        place = topTenCheck(songId, username);
+                        found = true;
+                    }
                 }
-                return 0;
+                if(!found) {
+                    sendScoreSubmission(songId, username, score);
+                    place = topTenCheck(songId, username);
+                }
+            } catch (ExecutionException | InterruptedException e) {
+                place = 0;
             }
 
-            sendScoreSubmission(songId, username, score);
-            return topTenCheck(songId, username);
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-            return 0;
-        }
+            if(place != 0){
+                NotificationPublisher.showNotification(context,
+                        String.format("Congrats, you placed #%d on %s", place,
+                                songName));
+            }
+        });
     }
 
     /**
@@ -127,6 +141,7 @@ public class SongServer {
      */
     private int topTenCheck(String songId, String username)
             throws InterruptedException, ExecutionException {
+        Thread.sleep(2000);
         List<Score> topTen = getScoresForSong(songId).get();
         for (int i = 0; i < topTen.size(); i++) {
             if (topTen.get(i).getName().equals(username)) {

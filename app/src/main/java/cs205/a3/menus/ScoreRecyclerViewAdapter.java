@@ -1,5 +1,6 @@
 package cs205.a3.menus;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,6 +35,7 @@ public class ScoreRecyclerViewAdapter extends RecyclerView.Adapter<ScoreRecycler
         return new ViewHolder(ScoreFragmentItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
     }
 
+    @SuppressLint("DefaultLocale")
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
@@ -41,8 +43,10 @@ public class ScoreRecyclerViewAdapter extends RecyclerView.Adapter<ScoreRecycler
         holder.mContentView.setText(mValues.get(position).getName());
 
         //Sets the action to send an email if the user owns the high score
-        String me = LeaderboardUtils.readNameFile(holder.mButton.getContext());
-        if (me.equals(mValues.get(position).getName())) {
+        String me = LeaderboardUtils.readNameFile(holder.mButton.getContext()).trim();
+
+        if (me.equals(mValues.get(position).getName().trim())) {
+            holder.mButton.setVisibility(View.VISIBLE);
             holder.mButton.setOnClickListener(x -> {
                 Intent i = new Intent(Intent.ACTION_SEND);
                 i.setType("message/rfc822");

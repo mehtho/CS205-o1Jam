@@ -36,7 +36,7 @@ import cs205.a3.timers.MillDeltaTimer;
  */
 public class Game {
     // Constants
-    private final static int OFFSET = 600;
+    private final static int OFFSET = 370;
     private final static int targetFps = 50;
     private final static long intervalFps = 1000L;
 
@@ -62,7 +62,6 @@ public class Game {
     private final Paint scoreText = new Paint();
     private final Paint noteColorOdd = new Paint();
     private final Paint noteColorEven = new Paint();
-    private final RectF spinningTimer = new RectF(1210F, 0F, 1410F, 200F);
     // Board data, which displays the current position of notes that flow down the screen
     private final Board board = new Board();
     // Queued notes that will start following in sync with the music
@@ -241,13 +240,13 @@ public class Game {
          */
         canvas.drawText(
                 String.format("%.2f", avgFps),
-                1000.0f, 30.0f,
+                canvasWidth-450.0f, 30.0f,
                 fpsText
         );
 
         canvas.drawText(
                 timerText,
-                1230.0f, 300.0f,
+                canvasWidth-250.0f, 300.0f,
                 fpsText
         );
 
@@ -271,8 +270,8 @@ public class Game {
                 fpsText);
 
         canvas.drawArc(
-                spinningTimer,
-                0F,
+                new RectF(canvasWidth-200, 0F, canvasWidth, 200F),
+                270F,
                 (float) (Math.min(1.0, (float) millDelta / maxTime) * 360),
                 true,
                 fpsText);

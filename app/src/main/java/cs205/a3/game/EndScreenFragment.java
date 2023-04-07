@@ -65,15 +65,11 @@ public class EndScreenFragment extends Fragment {
             SongServer songServer = SongServer.getInstance(getContext().getString(R.string.server));
             Intent intent = getActivity().getIntent();
 
-            int place = songServer.submitScore(intent.getStringExtra("songId"),
+            songServer.submitScore(intent.getStringExtra("songId"),
                     LeaderboardUtils.readNameFile(getContext()),
-                    intent.getLongExtra("score", 0));
+                    intent.getLongExtra("score", 0), getContext(),
+                    intent.getStringExtra("songName"));
 
-            if (place > 0) {
-                NotificationPublisher.showNotification(getContext(),
-                        String.format("Congrats, you placed #%d on %s", place,
-                                intent.getStringExtra("songName")));
-            }
 
             view1.getContext().startActivity(new Intent(view1.getContext(), MainActivity.class));
         });
